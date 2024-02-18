@@ -6,9 +6,7 @@
     <title>Форма для новых идей</title>
     <link href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-        }
+        body { font-family: 'Arial', sans-serif; }
         .idea-form {
             background: #fff;
             padding: 20px;
@@ -19,11 +17,7 @@
             position: relative;
             top: -40px;
         }
-        .idea-form h2 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
+        .idea-form h2 { color: #333; font-size: 24px; margin-bottom: 10px; }
         .idea-form textarea {
             width: 100%;
             padding: 8px;
@@ -41,9 +35,7 @@
             cursor: pointer;
             font-size: 16px;
         }
-        .idea-form button:hover {
-            background-color: #45a049;
-        }
+        .idea-form button:hover { background-color: #45a049; }
         .idea-form .image-header {
             background-image: url('https://img.freepik.com/premium-vector/creative-idea-concept-business-characters-with-huge-illuminated-light-bulbs-team-searching-new-insights-for-project-development-teamwork-poster-banner-or-flyer-cartoon-people-vector-illustration_87771-14511.jpg');
             background-size: cover;
@@ -66,42 +58,16 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('startTime').value = new Date().toISOString();
-
-        document.getElementById('ideaForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            var formData = new FormData(this);
-            
-            fetch(this.action, {
-                method: 'POST',
-                body: formData,
-            })
+    document.getElementById('ideaForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Предотвратить стандартную отправку формы
+        var formData = new FormData(this);
+        fetch(this.action, { method: 'POST', body: formData })
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Ошибка отправки формы');
+                if (response.ok) { alert('Форма успешно отправлена!'); }
+                else { throw new Error('Ошибка отправки формы'); }
             })
-            .then(data => {
-                alert('Форма успешно отправлена!');
-                this.reset();
-                localStorage.removeItem("ideaText");
-            })
-            .catch(error => {
-                console.error('Ошибка:', error);
-            });
-        });
-
-        var ideaDescription = document.getElementById('ideaDescription');
-        if(localStorage.getItem("ideaText")) {
-            ideaDescription.value = localStorage.getItem("ideaText");
-        }
-
-        ideaDescription.addEventListener('input', function() {
-            localStorage.setItem("ideaText", this.value);
-        });
+            .catch(error => { console.error('Ошибка:', error); });
+        this.reset(); // Сброс формы после отправки
     });
 </script>
 
