@@ -58,16 +58,42 @@
 </div>
 
 <script>
-    document.getElementById('ideaForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Предотвратить стандартную отправку формы
-        var formData = new FormData(this);
-        fetch(this.action, { method: 'POST', body: formData })
-            .then(response => {
-                if (response.ok) { alert('Форма успешно отправлена!'); }
-                else { throw new Error('Ошибка отправки формы'); }
+    document.addEventListener('DOMContentLoaded', function() {
+        var ideaDescription = document.getElementById('ideaDescription');
+        
+        // Восстановление текста из localStorage при загрузке страницы
+        var savedIdeaText = localStorage.getItem("ideaText");
+        if(savedIdeaText) {
+            ideaDescription.value = savedIdeaText;
+        }
+        
+        document.getElementById('ideaForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            document.getElementById('startTime').value = new Date().toISOString();
+            var formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
             })
-            .catch(error => { console.error('Ошибка:', error); });
-        this.reset(); // Сброс формы после отправки
+            .then(response => {
+                if (response.ok) {
+                    alert('Форма успешно отправлена!');
+                    localStorage.removeItem("ideaText"); // Очистка localStorage
+                    this.reset(); // Сброс формы после отправки
+                } else {
+                    throw new Error('Ошибка отправки формы');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+            });
+        });
+
+        // Сохранение текста в localStorage при его изменении
+        ideaDescription.addEventListener('input', function() {
+            localStorage.setItem("ideaText", this.value);
+        });
     });
 </script>
 
