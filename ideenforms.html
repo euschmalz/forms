@@ -16,8 +16,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             max-width: 600px;
             margin: 40px auto;
-            position: relative;
-            top: -40px;
         }
         .idea-form h2 {
             color: #333;
@@ -30,7 +28,7 @@
             margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            height: 150px; /* Увеличено в 5 раз по сравнению с предыдущим размером */
+            height: 150px;
         }
         .idea-form button {
             background-color: #4CAF50;
@@ -60,16 +58,11 @@
     <h2>+ Новая Идея</h2>
     <form id="ideaForm" action="https://script.google.com/macros/s/AKfycbwFdrO-GwchvUB2m12m-u_JJfW6dseonfMoGfPLMvGk5GT8uAjRnOZ-YdKmCRBrwHtl/exec" method="post">
         <textarea id="ideaDescription" name="ideaDescription" placeholder="Опиши свою идею *" required></textarea>
-        <!-- Скрытое поле для метки времени открытия формы -->
-        <input type="hidden" id="startTime" name="startTime" value="">
         <button type="submit">Отправить</button>
     </form>
 </div>
 
 <script>
-    // Устанавливаем начальное время при загрузке страницы
-    document.getElementById('startTime').value = new Date().toISOString();
-
     // Проверяем, есть ли сохраненный текст в localStorage
     if(localStorage.getItem("ideaText")) {
         document.getElementById('ideaDescription').value = localStorage.getItem("ideaText");
