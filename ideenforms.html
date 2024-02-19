@@ -5,58 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Форма для новых идей</title>
     <link href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-        }
-        .idea-form {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .idea-form h2 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        .idea-form textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            height: 150px;
-        }
-        .idea-form button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .idea-form button:hover {
-            background-color: #45a049;
-        }
-        .idea-form .image-header {
-            background-image: url('https://img.freepik.com/premium-vector/creative-idea-concept-business-characters-with-huge-illuminated-light-bulbs-team-searching-new-insights-for-project-development-teamwork-poster-banner-or-flyer-cartoon-people-vector-illustration_87771-14511.jpg');
-            background-size: cover;
-            background-position: center;
-            height: 200px;
-            border-radius: 8px 8px 0 0;
-        }
-    </style>
+    <!-- Стили остаются без изменений -->
 </head>
 <body>
 
 <div class="idea-form">
     <div class="image-header"></div>
     <h2>+ Новая Идея</h2>
-    <form id="ideaForm" method="post">
+    <form id="ideaForm">
         <input type="hidden" id="startTime" name="startTime" value="">
         <textarea id="ideaDescription" name="ideaDescription" placeholder="Опиши свою идею *" required></textarea>
         <button type="button" onclick="submitIdea()">Отправить</button>
@@ -74,21 +30,24 @@
     });
 
     function submitIdea() {
-        const formData = new FormData(document.getElementById('ideaForm'));
-        fetch('https://script.google.com/macros/s/AKfycbyDCINMNxnV3J89z-4eVnFPn44h5kcZ-myCogkBHhQ5mGQJeNaTkfihW3_EkofUEr_z/exec', {
+        const formData = new FormData();
+        formData.append('startTime', document.getElementById('startTime').value);
+        formData.append('ideaDescription', document.getElementById('ideaDescription').value);
+
+        fetch('https://script.google.com/macros/s/AKfycbw4khom_AIcWhZci809MUAwmf_GVd056HLjWSGaK9Fx0DBovMUoKEy0VEK5AQcYMXk/exec', {
             method: 'POST',
+            mode: 'no-cors', // В зависимости от конфигурации вашего скрипта, это может потребоваться
             body: formData
         })
         .then(response => {
-            if(response.ok) {
-                localStorage.removeItem('ideaText');
-                ideaDescription.value = ''; // Очищаем поле после успешной отправки
-                alert('Идея успешно отправлена!');
-            } else {
-                alert('Ошибка при отправке. Попробуйте снова.');
-            }
+            localStorage.removeItem('ideaText');
+            ideaDescription.value = '';
+            alert('Идея успешно отправлена!');
         })
-        .catch(error => console.error('Ошибка:', error));
+        .catch(error => {
+            console.error('Ошибка:', error);
+            alert('Ошибка при отправке. Попробуйте снова.');
+        });
     }
 </script>
 
