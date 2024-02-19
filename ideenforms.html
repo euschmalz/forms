@@ -13,7 +13,7 @@
     <div class="image-header"></div>
     <h2>+ Новая Идея</h2>
     <form id="ideaForm">
-        <input type="hidden" id="startTime" name="startTime" value="">
+        <input type="hidden" id="startTime" name="startTime">
         <textarea id="ideaDescription" name="ideaDescription" placeholder="Опиши свою идею *" required></textarea>
         <button type="button" onclick="submitIdea()">Отправить</button>
     </form>
@@ -30,18 +30,21 @@
     });
 
     function submitIdea() {
-        const formData = new FormData();
-        formData.append('startTime', document.getElementById('startTime').value);
-        formData.append('ideaDescription', document.getElementById('ideaDescription').value);
+        const startTime = document.getElementById('startTime').value;
+        const ideaText = ideaDescription.value;
+        const data = { startTime, ideaDescription: ideaText };
 
         fetch('https://script.google.com/macros/s/AKfycbw4khom_AIcWhZci809MUAwmf_GVd056HLjWSGaK9Fx0DBovMUoKEy0VEK5AQcYMXk/exec', {
             method: 'POST',
-            mode: 'no-cors', // В зависимости от конфигурации вашего скрипта, это может потребоваться
-            body: formData
+            mode: 'no-cors', // Внимание: режим no-cors может скрыть полезные ошибки в консоли
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
         })
         .then(response => {
             localStorage.removeItem('ideaText');
-            ideaDescription.value = '';
+            ideaDescription.value = ''; // Очищаем поле после успешной отправки
             alert('Идея успешно отправлена!');
         })
         .catch(error => {
