@@ -15,7 +15,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             max-width: 600px;
-            margin: 40px auto;
+            margin: 0 auto; /* Обновлено для отображения формы в верхней части страницы */
         }
         .idea-form h2 {
             color: #333;
@@ -57,7 +57,6 @@
     <div class="image-header"></div>
     <h2>+ Новая Идея</h2>
     <form id="ideaForm" action="https://script.google.com/macros/s/AKfycbyDCINMNxnV3J89z-4eVnFPn44h5kcZ-myCogkBHhQ5mGQJeNaTkfihW3_EkofUEr_z/exec" method="post">
-        <!-- Скрытое поле для фиксации даты и времени открытия формы -->
         <input type="hidden" id="startTime" name="startTime" value="">
         <textarea id="ideaDescription" name="ideaDescription" placeholder="Опиши свою идею *" required></textarea>
         <button type="submit">Отправить</button>
@@ -65,8 +64,19 @@
 </div>
 
 <script>
-    // Устанавливаем начальное время при загрузке страницы
     document.getElementById('startTime').value = new Date().toISOString().replace('T', ' ').slice(0, 16);
+
+    const ideaDescription = document.getElementById('ideaDescription');
+    ideaDescription.value = localStorage.getItem('ideaText') || '';
+
+    ideaDescription.addEventListener('input', function() {
+        localStorage.setItem('ideaText', this.value);
+    });
+
+    document.getElementById('ideaForm').addEventListener('submit', function() {
+        localStorage.removeItem('ideaText');
+        ideaDescription.value = ''; // Очистка поля после отправки
+    });
 </script>
 
 </body>
