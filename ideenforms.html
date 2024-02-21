@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Форма для новых идей</title>
+    <!-- Ссылка на CSS фреймворк для стилизации -->
     <link href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css" rel="stylesheet">
-    <style>
+ <style>
                body {
             font-family: 'Arial', sans-serif;
         }
@@ -53,46 +54,52 @@
     </style>
 </head>
 <body>
-<div class="idea-form">
-    <h2>+ Новая Идея</h2>
-    <form id="ideaForm" action="https://script.google.com/macros/s/ВАШ_УНИКАЛЬНЫЙ_ID_СКРИПТА/exec" method="post">
-        <input type="hidden" id="startTime" name="startTime" value="">
-        <textarea id="ideaDescription" name="ideaDescription" placeholder="Опиши свою идею *" required></textarea>
-        <div>
-            <button type="button" id="startRecord">speech to text START</button>
-            <button type="button" id="stopRecord">speech to text STOP</button>
-            <button type="button" onclick="correctText()">Исправить ошибки</button>
-        </div>
-        <button type="submit">Отправить</button>
+<div class="container">
+    <h1>+ Новая Идея</h1>
+    <form id="ideaForm" action="ВАШ_УНИКАЛЬНЫЙ_URL_СКРИПТА" method="post">
+        <input type="hidden" id="startTime" name="startTime">
+        <textarea id="ideaDescription" name="ideaDescription" placeholder="Опиши свою идею" required></textarea>
+        <button type="button" id="startRecord">Начать запись</button>
+        <button type="button" id="stopRecord" style="display:none;">Остановить запись</button>
+        <input type="submit" value="Отправить">
     </form>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'ru-RU';
+        recognition.continuous = true;
+
+        document.getElementById('startRecord').addEventListener('click', function() {
+            recognition.start();
+            this.style.display = 'none';
+            document.getElementById('stopRecord').style.display = 'inline';
+        });
+
+        document.getElementById('stopRecord').addEventListener('click', function() {
+            recognition.stop();
+            this.style.display = 'none';
+            document.getElementById('startRecord').style.display = 'inline';
+        });
+
+        recognition.onresult = function(event) {
+            var last = event.results.length - 1;
+            var text = event.results[last][0].transcript;
+            document.getElementById('ideaDescription').value += text;
+        };
+
+        recognition.onerror = function(event) {
+            console.log('Ошибка распознавания речи: ' + event.error);
+        };
+
         // Установка начального времени
         document.getElementById('startTime').value = new Date().toISOString();
-        
-        // Локальное хранилище для текста идеи
-        const ideaDescription = document.getElementById('ideaDescription');
-        ideaDescription.value = localStorage.getItem('ideaText') || '';
-        ideaDescription.addEventListener('input', function() {
-            localStorage.setItem('ideaText', this.value);
-        });
 
-        // Очистка localStorage при отправке формы
+        // Обработчик отправки формы
         document.getElementById('ideaForm').addEventListener('submit', function() {
-            localStorage.removeItem('ideaText');
+            // Можно добавить действия перед отправкой формы, например, проверку данных
         });
     });
-
-    // Функция для кнопки "Исправить ошибки"
-    function correctText() {
-        var textArea = document.getElementById('ideaDescription');
-        textArea.focus();
-        textArea.select();
-        // Здесь можно добавить интеграцию с API для проверки орфографии
-    }
-
-    // Здесь добавьте код для Web Speech API
 </script>
 </body>
 </html>
