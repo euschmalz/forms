@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Голос в текст</title>
+    <title>Голос в текст с редактированием</title>
     <style>
-        #saveButton {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+        #saveButton, #clearButton {
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -16,17 +14,18 @@
     <textarea id="speechInputField" rows="10" cols="50"></textarea>
     <button onclick="startSpeechRecognition();">Голос в текст</button>
     <button id="saveButton" onclick="clearText();">Сохранить</button>
+    <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
 
     <script>
         var recognition = new webkitSpeechRecognition();
-        recognition.continuous = false; // Изменено на false для однократного распознавания
+        recognition.continuous = false;
         recognition.lang = 'ru-RU';
         recognition.interimResults = false;
 
         recognition.onresult = function(event) {
             var transcript = event.results[event.resultIndex][0].transcript;
             var speechInputField = document.getElementById('speechInputField');
-            speechInputField.value += transcript + ' '; // Добавлен пробел для разделения фраз
+            speechInputField.value += transcript + ' ';
             localStorage.setItem('savedText', speechInputField.value);
         };
 
@@ -37,6 +36,12 @@
         function clearText() {
             document.getElementById('speechInputField').value = '';
             localStorage.removeItem('savedText');
+        }
+
+        function clearTextInput() {
+            var speechInputField = document.getElementById('speechInputField');
+            speechInputField.value = '';
+            // Не удаляем текст из localStorage, чтобы пользователь мог отменить действие
         }
 
         window.onload = function() {
