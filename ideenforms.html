@@ -14,33 +14,24 @@
 </head>
 <body>
     <textarea id="speechInputField" rows="10" cols="50"></textarea>
-    <button onclick="startSpeechRecognition();">Start</button>
-    <button onclick="stopSpeechRecognition();">Stop</button>
+    <button onclick="startSpeechRecognition();">Голос в текст</button>
     <button id="saveButton" onclick="clearText();">Сохранить</button>
 
     <script>
         var recognition = new webkitSpeechRecognition();
-        recognition.continuous = true;
+        recognition.continuous = false; // Изменено на false для однократного распознавания
         recognition.lang = 'ru-RU';
         recognition.interimResults = false;
 
         recognition.onresult = function(event) {
             var transcript = event.results[event.resultIndex][0].transcript;
             var speechInputField = document.getElementById('speechInputField');
-            speechInputField.value += transcript;
+            speechInputField.value += transcript + ' '; // Добавлен пробел для разделения фраз
             localStorage.setItem('savedText', speechInputField.value);
-        };
-
-        recognition.onend = function() {
-            recognition.start(); // Автоматический перезапуск распознавания
         };
 
         function startSpeechRecognition() {
             recognition.start();
-        }
-
-        function stopSpeechRecognition() {
-            recognition.stop();
         }
 
         function clearText() {
