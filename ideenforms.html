@@ -1,55 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Голос в текст с редактированием</title>
-    <style>
-        #saveButton, #clearButton {
-            margin-top: 10px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Удаление слова</title>
+<style>
+    .selected {
+        background-color: yellow;
+    }
+</style>
 </head>
 <body>
-    <textarea id="speechInputField" rows="10" cols="50"></textarea>
-    <button onclick="startSpeechRecognition();">Голос в текст</button>
-    <button id="saveButton" onclick="clearText();">Сохранить</button>
-    <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
 
-    <script>
-        var recognition = new webkitSpeechRecognition();
-        recognition.continuous = false;
-        recognition.lang = 'ru-RU';
-        recognition.interimResults = false;
+<p id="textParagraph">Нажмите на любое слово в этом тексте, а затем нажмите кнопку ниже, чтобы удалить выбранное слово.</p>
+<button id="deleteWordButton">Удалить слово</button>
 
-        recognition.onresult = function(event) {
-            var transcript = event.results[event.resultIndex][0].transcript;
-            var speechInputField = document.getElementById('speechInputField');
-            speechInputField.value += transcript + ' ';
-            localStorage.setItem('savedText', speechInputField.value);
-        };
+<script>
+    document.getElementById('textParagraph').addEventListener('click', function(event) {
+        // Убираем выделение со всех слов
+        document.querySelectorAll('.selected').forEach(function(word) {
+            word.classList.remove('selected');
+        });
 
-        function startSpeechRecognition() {
-            recognition.start();
+        // Выделяем слово
+        if (event.target !== this) {
+            event.target.classList.add('selected');
         }
+    }, true);
 
-        function clearText() {
-            document.getElementById('speechInputField').value = '';
-            localStorage.removeItem('savedText');
+    document.getElementById('deleteWordButton').addEventListener('click', function() {
+        // Удаляем выделенное слово
+        var selectedWord = document.querySelector('.selected');
+        if (selectedWord) {
+            selectedWord.remove();
         }
+    });
 
-        function clearTextInput() {
-            var speechInputField = document.getElementById('speechInputField');
-            speechInputField.value = '';
-            // Не удаляем текст из localStorage, чтобы пользователь мог отменить действие
-        }
+    // Разбиваем текст на слова для возможности выбора
+    window.onload = function() {
+        var paragraph = document.getElementById('textParagraph');
+        var words = paragraph.innerText.split(/\s+/).filter(Boolean);
+        paragraph.innerHTML = words.map(function(word) {
+            return '<span>' + word + '</span>';
+        }).join(' ');
+    };
+</script>
 
-        window.onload = function() {
-            var savedText = localStorage.getItem('savedText');
-            if (savedText) {
-                document.getElementById('speechInputField').value = savedText;
-            }
-        };
-    </script>
 </body>
 </html>
