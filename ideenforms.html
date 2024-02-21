@@ -33,7 +33,7 @@
         var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = 'ru-RU';
         recognition.continuous = true;
-        recognition.interimResults = true;
+        recognition.interimResults = false;
 
         document.getElementById('startRecord').addEventListener('click', function() {
             recognition.start();
