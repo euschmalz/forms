@@ -1,57 +1,59 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма для новых идей</title>
-    <link href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css" rel="stylesheet">
+    <title>Голос в текст</title>
+    <style>
+        #saveButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+    </style>
 </head>
 <body>
-<div class="idea-form">
-    <div class="image-header"></div>
-    <h2>+ Новая Идея</h2>
-    <form id="ideaForm" action="https://script.google.com/macros/s/ВАШ_УНИКАЛЬНЫЙ_ID_СКРИПТА/exec" method="post">
-        <input type="hidden" id="startTime" name="startTime" value="">
-        <textarea id="ideaDescription" name="ideaDescription" placeholder="Опиши свою идею *" required></textarea>
-        <button type="button" id="startRecord">Начать запись</button>
-        <button type="button" id="stopRecord">Остановить запись</button>
-        <button type="submit">Отправить</button>
-    </form>
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('startTime').value = new Date().toISOString();
-        const ideaDescription = document.getElementById('ideaDescription');
-        ideaDescription.value = localStorage.getItem('ideaText') || '';
-        ideaDescription.addEventListener('input', function() {
-            localStorage.setItem('ideaText', this.value);
-        });
-        document.getElementById('ideaForm').addEventListener('submit', function() {
-            localStorage.removeItem('ideaText');
-        });
+    <textarea id="speechInputField" rows="10" cols="50"></textarea>
+    <button onclick="startSpeechRecognition();">Start</button>
+    <button onclick="stopSpeechRecognition();">Stop</button>
+    <button id="saveButton" onclick="clearText();">Сохранить</button>
 
-        var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'ru-RU';
+    <script>
+        var recognition = new webkitSpeechRecognition();
         recognition.continuous = true;
+        recognition.lang = 'ru-RU';
         recognition.interimResults = false;
-
-        document.getElementById('startRecord').addEventListener('click', function() {
-            recognition.start();
-        });
-
-        document.getElementById('stopRecord').addEventListener('click', function() {
-            recognition.stop();
-        });
 
         recognition.onresult = function(event) {
             var transcript = event.results[event.resultIndex][0].transcript;
-            ideaDescription.value += transcript;
+            var speechInputField = document.getElementById('speechInputField');
+            speechInputField.value += transcript;
+            localStorage.setItem('savedText', speechInputField.value);
         };
 
-        recognition.onerror = function(event) {
-            console.error('Ошибка распознавания речи: ', event.error);
+        recognition.onend = function() {
+            recognition.start(); // Автоматический перезапуск распознавания
         };
-    });
-</script>
+
+        function startSpeechRecognition() {
+            recognition.start();
+        }
+
+        function stopSpeechRecognition() {
+            recognition.stop();
+        }
+
+        function clearText() {
+            document.getElementById('speechInputField').value = '';
+            localStorage.removeItem('savedText');
+        }
+
+        window.onload = function() {
+            var savedText = localStorage.getItem('savedText');
+            if (savedText) {
+                document.getElementById('speechInputField').value = savedText;
+            }
+        };
+    </script>
 </body>
 </html>
