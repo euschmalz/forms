@@ -4,101 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Форма для новых идей</title>
-    <!-- Ссылка на CSS фреймворк для стилизации -->
     <link href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css" rel="stylesheet">
- <style>
-               body {
-            font-family: 'Arial', sans-serif;
-        }
-        .idea-form {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 0 auto; /* Обновлено для отображения формы в верхней части страницы */
-        }
-        .idea-form h2 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        .idea-form textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            height: 150px;
-        }
-        .idea-form button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .idea-form button:hover {
-            background-color: #45a049;
-        }
-        .idea-form .image-header {
-            background-image: url('https://img.freepik.com/premium-vector/creative-idea-concept-business-characters-with-huge-illuminated-light-bulbs-team-searching-new-insights-for-project-development-teamwork-poster-banner-or-flyer-cartoon-people-vector-illustration_87771-14511.jpg');
-            background-size: cover;
-            background-position: center;
-            height: 200px;
-            border-radius: 8px 8px 0 0;
-        }
-
-    </style>
 </head>
 <body>
-<div class="container">
-    <h1>+ Новая Идея</h1>
-    <form id="ideaForm" action="ВАШ_УНИКАЛЬНЫЙ_URL_СКРИПТА" method="post">
-        <input type="hidden" id="startTime" name="startTime">
-        <textarea id="ideaDescription" name="ideaDescription" placeholder="Опиши свою идею" required></textarea>
+<div class="idea-form">
+    <div class="image-header"></div>
+    <h2>+ Новая Идея</h2>
+    <form id="ideaForm" action="https://script.google.com/macros/s/ВАШ_УНИКАЛЬНЫЙ_ID_СКРИПТА/exec" method="post">
+        <input type="hidden" id="startTime" name="startTime" value="">
+        <textarea id="ideaDescription" name="ideaDescription" placeholder="Опиши свою идею *" required></textarea>
         <button type="button" id="startRecord">Начать запись</button>
-        <button type="button" id="stopRecord" style="display:none;">Остановить запись</button>
-        <input type="submit" value="Отправить">
+        <button type="button" id="stopRecord">Остановить запись</button>
+        <button type="submit">Отправить</button>
     </form>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('startTime').value = new Date().toISOString();
+        const ideaDescription = document.getElementById('ideaDescription');
+        ideaDescription.value = localStorage.getItem('ideaText') || '';
+        ideaDescription.addEventListener('input', function() {
+            localStorage.setItem('ideaText', this.value);
+        });
+        document.getElementById('ideaForm').addEventListener('submit', function() {
+            localStorage.removeItem('ideaText');
+        });
+
         var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = 'ru-RU';
         recognition.continuous = true;
+        recognition.interimResults = true;
 
         document.getElementById('startRecord').addEventListener('click', function() {
             recognition.start();
-            this.style.display = 'none';
-            document.getElementById('stopRecord').style.display = 'inline';
         });
 
         document.getElementById('stopRecord').addEventListener('click', function() {
             recognition.stop();
-            this.style.display = 'none';
-            document.getElementById('startRecord').style.display = 'inline';
         });
 
         recognition.onresult = function(event) {
-            var last = event.results.length - 1;
-            var text = event.results[last][0].transcript;
-            document.getElementById('ideaDescription').value += text;
+            var transcript = event.results[event.resultIndex][0].transcript;
+            ideaDescription.value += transcript;
         };
 
         recognition.onerror = function(event) {
-            console.log('Ошибка распознавания речи: ' + event.error);
+            console.error('Ошибка распознавания речи: ', event.error);
         };
-
-        // Установка начального времени
-        document.getElementById('startTime').value = new Date().toISOString();
-
-        // Обработчик отправки формы
-        document.getElementById('ideaForm').addEventListener('submit', function() {
-            // Можно добавить действия перед отправкой формы, например, проверку данных
-        });
     });
 </script>
 </body>
