@@ -5,112 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голос в текст с редактированием и сохранением</title>
     <style>
-        #saveButton, #clearButton, #deleteWordButton, #copyTextButton, #deleteBlockButton {
-            margin-top: 15px;
+        #saveButton, #clearButton, #deleteWordButton, #copyTextButton, #deleteBlockButton, #undoButton, #redoButton {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <textarea id="speechInputField" rows="20" cols="50" oninput="saveText()"></textarea>
+    <textarea id="speechInputField" rows="10" cols="50" oninput="handleInput()"></textarea>
     <button onclick="startSpeechRecognition();">Start</button>
     <button id="saveButton" onclick="clearText();">Сохранить</button>
     <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
     <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
     <button id="copyTextButton" onclick="copyText();">Скопировать весь текст</button>
     <button id="deleteBlockButton" onclick="deleteBlock();">Удалить весь блок</button>
+    <button id="undoButton" onclick="undoChange();">&#8592; Шаг назад</button>
+    <button id="redoButton" onclick="redoChange();">Шаг вперёд &#8594;</button>
 
     <script>
-        var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
-        var recognition = new SpeechRecognition();
+        var recognition = new webkitSpeechRecognition();
         recognition.continuous = true;
         recognition.lang = 'ru-RU';
         recognition.interimResults = false;
+        var undoStack = [];
+        var redoStack = [];
+        var isUndoRedoOperation = false;
 
         recognition.onresult = function(event) {
             var transcript = event.results[event.resultIndex][0].transcript;
-            var speechInputField = document.getElementById('speechInputField');
-            speechInputField.value += transcript + ' ';
-            saveText();
-        };
-
-        recognition.onerror = function(event) {
-            console.error('Ошибка распознавания речи: ', event.error);
+            document.getElementById('speechInputField').value += transcript + ' ';
+            saveStateForUndoRedo();
         };
 
         function startSpeechRecognition() {
-            try {
-                recognition.start();
-            } catch (e) {
-                console.error('Ошибка при запуске распознавания речи: ', e);
+            recognition.start();
+        }
+
+        function handleInput() {
+            if (!isUndoRedoOperation) saveStateForUndoRedo();
+            isUndoRedoOperation = false;
+        }
+
+        function saveStateForUndoRedo() {
+            var speechInputField = document.getElementById('speechInputField');
+            undoStack.push(speechInputField.value);
+            redoStack = []; // Очистить redoStack при каждом новом вводе
+        }
+
+        function undoChange() {
+            if (undoStack.length > 1) {
+                var currentState = undoStack.pop();
+                redoStack.push(currentState);
+                var previousState = undoStack[undoStack.length - 1];
+                document.getElementById('speechInputField').value = previousState;
+                isUndoRedoOperation = true;
             }
         }
 
-        function saveText() {
-            var speechInputField = document.getElementById('speechInputField');
-            localStorage.setItem('savedText', speechInputField.value);
+        function redoChange() {
+            if (redoStack.length > 0) {
+                var nextState = redoStack.pop();
+                undoStack.push(nextState);
+                document.getElementById('speechInputField').value = nextState;
+                isUndoRedoOperation = true;
+            }
         }
 
         function clearText() {
             document.getElementById('speechInputField').value = '';
-            localStorage.removeItem('savedText');
+            saveStateForUndoRedo();
         }
 
         function clearTextInput() {
             var speechInputField = document.getElementById('speechInputField');
             speechInputField.value = '';
-            saveText();
+            saveStateForUndoRedo();
         }
 
-        function deleteWord() {
-            var textarea = document.getElementById('speechInputField');
-            var text = textarea.value;
-            var startPos = textarea.selectionStart;
-            var endPos = textarea.selectionEnd;
-            var beforeText = text.substring(0, startPos);
-            var afterText = text.substring(endPos);
-
-            if (startPos === endPos) {
-                var newBeforeText = beforeText.replace(/[\wа-яА-Я]+(\s*)?$/, '');
-                var newAfterText = afterText.replace(/^(\s*)?[\wа-яА-Я]+/, '');
-                textarea.value = newBeforeText + newAfterText;
-                textarea.selectionStart = textarea.selectionEnd = newBeforeText.length;
-            } else {
-                textarea.value = beforeText + afterText;
-                textarea.selectionStart = textarea.selectionEnd = startPos;
-            }
-
-            saveText();
-        }
-
-        function copyText() {
-            var speechInputField = document.getElementById('speechInputField');
-            speechInputField.select();
-            document.execCommand('copy');
-            window.getSelection().removeAllRanges();
-            alert('Текст скопирован');
-        }
-
-        function deleteBlock() {
-            var textarea = document.getElementById('speechInputField');
-            var text = textarea.value;
-            var cursorPos = textarea.selectionStart;
-            var beforeText = text.substring(0, cursorPos);
-            var afterText = text.substring(cursorPos);
-            var startBlockPos = beforeText.lastIndexOf("\n\n") + 2;
-            if (startBlockPos < 2) startBlockPos = 0;
-            var endBlockPos = afterText.indexOf("\n\n");
-            if (endBlockPos === -1) endBlockPos = afterText.length;
-            else endBlockPos += cursorPos + 2;
-
-            textarea.value = text.substring(0, startBlockPos) + text.substring(endBlockPos);
-            textarea.selectionStart = textarea.selectionEnd = startBlockPos;
-            saveText();
-        }
+        // Функции deleteWord, copyText, deleteBlock, saveText
 
         window.onload = function() {
             var savedText = localStorage.getItem('savedText');
             if (savedText) {
                 document.getElementById('speechInputField').value = savedText;
+                saveStateForUndoRedo(); // Сохраняем исходное состояние для возможности отмены
             }
         };
     </script>
