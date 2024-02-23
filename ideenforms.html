@@ -5,44 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голос в текст с редактированием и сохранением</title>
     <style>
-        #controls, #cursorControls {
-            margin-top: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #cursorControls button {
-            width: 30px;
-            height: 30px;
-            margin: 2px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #upButton, #downButton {
-            margin: 0 20px;
-        }
-        button {
-            cursor: pointer;
+        #saveButton, #clearButton, #deleteWordButton, #copyTextButton, #deleteBlockButton {
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-    <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
-    <div id="controls">
-        <button onclick="startSpeechRecognition();">Start</button>
-        <button id="saveButton" onclick="clearText();">Сохранить</button>
-        <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
-        <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
-        <button id="copyTextButton" onclick="copyText();">Скопировать весь текст</button>
-        <button id="deleteBlockButton" onclick="deleteBlock();">Удалить весь блок</button>
-    </div>
-    <div id="cursorControls">
-        <button onclick="moveCursor(-1);">&#9664;</button> <!-- Left -->
-        <button id="upButton" onclick="moveCursorVertically(-1);">&#9650;</button> <!-- Up -->
-        <button id="downButton" onclick="moveCursorVertically(1);">&#9660;</button> <!-- Down -->
-        <button onclick="moveCursor(1);">&#9654;</button> <!-- Right -->
-    </div>
+    <textarea id="speechInputField" rows="20" cols="50" oninput="saveText()"></textarea>
+    <button onclick="startSpeechRecognition();">Start</button>
+    <button id="saveButton" onclick="clearText();">Сохранить</button>
+    <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
+    <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
+    <button id="copyTextButton" onclick="copyText();">Скопировать весь текст</button>
+    <button id="deleteBlockButton" onclick="deleteBlock();">Удалить весь блок</button>
 
     <script>
         var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
@@ -63,7 +38,11 @@
         };
 
         function startSpeechRecognition() {
-            recognition.start();
+            try {
+                recognition.start();
+            } catch (e) {
+                console.error('Ошибка при запуске распознавания речи: ', e);
+            }
         }
 
         function saveText() {
@@ -77,12 +56,30 @@
         }
 
         function clearTextInput() {
-            document.getElementById('speechInputField').value = '';
+            var speechInputField = document.getElementById('speechInputField');
+            speechInputField.value = '';
             saveText();
         }
 
         function deleteWord() {
-            // Прежняя реализация функции deleteWord
+            var textarea = document.getElementById('speechInputField');
+            var text = textarea.value;
+            var startPos = textarea.selectionStart;
+            var endPos = textarea.selectionEnd;
+            var beforeText = text.substring(0, startPos);
+            var afterText = text.substring(endPos);
+
+            if (startPos === endPos) {
+                var newBeforeText = beforeText.replace(/[\wа-яА-Я]+(\s*)?$/, '');
+                var newAfterText = afterText.replace(/^(\s*)?[\wа-яА-Я]+/, '');
+                textarea.value = newBeforeText + newAfterText;
+                textarea.selectionStart = textarea.selectionEnd = newBeforeText.length;
+            } else {
+                textarea.value = beforeText + afterText;
+                textarea.selectionStart = textarea.selectionEnd = startPos;
+            }
+
+            saveText();
         }
 
         function copyText() {
@@ -94,15 +91,20 @@
         }
 
         function deleteBlock() {
-            // Прежняя реализация функции deleteBlock
-        }
+            var textarea = document.getElementById('speechInputField');
+            var text = textarea.value;
+            var cursorPos = textarea.selectionStart;
+            var beforeText = text.substring(0, cursorPos);
+            var afterText = text.substring(cursorPos);
+            var startBlockPos = beforeText.lastIndexOf("\n\n") + 2;
+            if (startBlockPos < 2) startBlockPos = 0;
+            var endBlockPos = afterText.indexOf("\n\n");
+            if (endBlockPos === -1) endBlockPos = afterText.length;
+            else endBlockPos += cursorPos + 2;
 
-        function moveCursor(direction) {
-            // Реализация перемещения курсора влево или вправо
-        }
-
-        function moveCursorVertically(direction) {
-            // Реализация перемещения курсора вверх или вниз
+            textarea.value = text.substring(0, startBlockPos) + text.substring(endBlockPos);
+            textarea.selectionStart = textarea.selectionEnd = startBlockPos;
+            saveText();
         }
 
         window.onload = function() {
