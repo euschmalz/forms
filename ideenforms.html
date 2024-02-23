@@ -4,48 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голос в текст с редактированием и сохранением</title>
-    <link rel="icon" type="image/x-icon" href="https://euschmalz.github.io/forms/favicon_ideja.webp">
-    <style>
+    <link rel="icon" type="image/x-icon" href="https://euschmalz.github.io/forms/favicon_ideja.ico">
+   <style>
         body {
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Чтобы контент был в верху страницы */
+            align-items: flex-start;
             height: 100vh;
             margin: 0;
-            padding-top: 20px; /* Отступ сверху */
+            padding-top: 20px;
         }
         .form-container {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%; /* Убедитесь, что контейнер занимает всю ширину */
+            max-width: 600px; /* Максимальная ширина контейнера */
         }
         #speechInputField {
-            resize: both; /* Позволяет изменять размер */
+            resize: both;
             overflow: auto;
             border: 1px solid #ccc;
             min-height: 100px;
-            min-width: 300px;
-            margin-bottom: 10px; /* Отступ снизу для textarea */
-            font-size: 16px; /* Размер шрифта в текстовом поле */
+            width: 100%; /* Текстовое поле занимает всю ширину контейнера */
+            box-sizing: border-box; /* Гарантирует, что padding и border включены в ширину */
+        }
+        .buttons-container {
+            display: flex;
+            justify-content: flex-start; /* Кнопки выравниваются по левому краю */
+            flex-wrap: wrap; /* Позволяет кнопкам обтекать друг друга */
+            width: 100%;
+            padding-top: 10px;
         }
         button {
-            font-size: 16px; /* Удвоенный размер шрифта для кнопок */
-            padding: 10px 20px; /* Больше внутреннего отступа для кнопок */
-            cursor: pointer; /* Курсор в виде указателя */
-            margin-top: 10px;
-            margin-right: 5px; /* Отступ справа для кнопок */
+            font-size: 16px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-right: 10px; /* Отступ справа для кнопок */
+            margin-bottom: 10px; /* Отступ снизу для кнопок */
         }
     </style>
 </head>
 <body>
     <div class="form-container">
         <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
-        <button onclick="startSpeechRecognition();">Start</button>
-        <button id="saveButton" onclick="clearText();">Сохранить</button>
-        <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
-        <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
-        <button id="copyTextButton" onclick="copyText();">Скопировать весь текст</button>
-        <button id="deleteBlockButton" onclick="deleteBlock();">Удалить весь блок</button>
+        <div class="buttons-container">
+            <button onclick="startSpeechRecognition();">Start</button>
+            <button id="saveButton" onclick="clearText();">Сохранить</button>
+            <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
+            <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
+            <button id="copyTextButton" onclick="copyText();">Скопировать весь текст</button>
+            <button id="deleteBlockButton" onclick="deleteBlock();">Удалить весь блок</button>
+        </div>
     </div>
 
     <script>
