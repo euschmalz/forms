@@ -91,7 +91,7 @@
             var speechInputField = document.getElementById('speechInputField');
             speechInputField.value += transcript + ' ';
             saveText();
-            formatText(); // Форматирование текста после распознавания
+            formatText();
         };
 
         recognition.onerror = function(event) {
@@ -125,7 +125,6 @@
         function formatText() {
             var textarea = document.getElementById('speechInputField');
             var text = textarea.value;
-            // Оставляем только одну пустую строку между блоками текста
             var formattedText = text.replace(/\n{3,}/g, '\n\n');
             textarea.value = formattedText;
             saveText();
@@ -168,7 +167,7 @@
             var savedText = localStorage.getItem('savedText');
             if (savedText) {
                 document.getElementById('speechInputField').value = savedText;
-                formatText(); // Форматируем текст при загрузке
+                formatText();
             }
             var fontSizeRange = document.getElementById('fontSizeRange');
             if(fontSizeRange) {
