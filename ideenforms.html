@@ -62,24 +62,30 @@ function deleteWord() {
 
     // Если нет выделения текста
     if (startPos === endPos) {
-        // Удаляем слово слева от курсора, если есть
+        // Удаляем слово слева от курсора
         var newBeforeText = beforeText.replace(/(\s+)?\S+(\s*)?$/, '');
         
-        // Удаляем слово справа от курсора, если слева пробел или курсор в начале строки
+        // Удаляем слово справа от курсора
         var newAfterText = afterText.replace(/^(\s*)?\S+(\s+)?/, '');
-        
-        // Обновляем текст и корректируем позицию курсора
-        textarea.value = newBeforeText + newAfterText;
-        var newPos = newBeforeText.length;
+
+        // Если после удаления слов курсор не в начале текста, добавляем пробел
+        var finalText = newBeforeText + (newBeforeText.length > 0 ? " " : "") + newAfterText;
+
+        // Обновляем текст
+        textarea.value = finalText;
+
+        // Корректируем позицию курсора. Если было удалено слово слева, курсор смещаем влево на один пробел
+        var newPos = newBeforeText.length + (newBeforeText.length > 0 ? 1 : 0);
         textarea.selectionStart = textarea.selectionEnd = newPos;
     } else {
-        // Если текст выделен, удаляем выделенный текст
-        textarea.value = beforeText + afterText;
-        textarea.selectionStart = textarea.selectionEnd = startPos;
+        // Если текст выделен, удаляем выделенный текст и оставляем один пробел
+        textarea.value = beforeText + " " + afterText;
+        textarea.selectionStart = textarea.selectionEnd = startPos + 1;
     }
 
     saveText();
 }
+
 
         function copyText() {
             var speechInputField = document.getElementById('speechInputField');
