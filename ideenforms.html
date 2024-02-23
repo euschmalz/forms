@@ -5,33 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голос в текст с редактированием и сохранением</title>
     <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Чтобы контент был в верху страницы */
+            height: 100vh;
+            margin: 0;
+            padding-top: 20px; /* Отступ сверху */
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         #speechInputField {
-            resize: none; /* Отключаем стандартное изменение размера */
-            overflow: auto; /* Убедитесь, что содержимое правильно прокручивается при изменении размера */
+            resize: both; /* Позволяет изменять размер */
+            overflow: auto;
             border: 1px solid #ccc;
             min-height: 100px;
             min-width: 300px;
-            display: block; /* Убедитесь, что textarea отображается как блочный элемент */
-            margin-bottom: 10px; /* Добавляем отступ снизу для textarea */
-            font-size: 18px; /* Устанавливаем начальный размер шрифта для текстового поля */
+            margin-bottom: 10px; /* Отступ снизу для textarea */
+            font-size: 16px; /* Размер шрифта в текстовом поле */
         }
         button {
-            margin-top: 10px;
-            margin-right: 5px; /* Добавляем небольшой отступ справа для каждой кнопки */
-            font-size: 16px; /* Увеличиваем размер шрифта в кнопках */
-            padding: 10px 20px; /* Увеличиваем внутренние отступы для кнопок */
-            cursor: pointer; /* Делаем курсор в виде указателя, чтобы показать, что кнопка кликабельна */
+            font-size: 32px; /* Удвоенный размер шрифта для кнопок */
+            padding: 10px 20px; /* Больше внутреннего отступа для кнопок */
+            cursor: pointer; /* Курсор в виде указателя */
+            margin-top: 15px;
+            margin-right: 5px; /* Отступ справа для кнопок */
         }
     </style>
 </head>
 <body>
-    <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
-    <button onclick="startSpeechRecognition();">Start</button>
-    <button id="saveButton" onclick="clearText();">Сохранить</button>
-    <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
-    <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
-    <button id="copyTextButton" onclick="copyText();">Скопировать текст</button>
-    <button id="deleteBlockButton" onclick="deleteBlock();">Удалить блок</button>
+    <div class="form-container">
+        <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
+        <button onclick="startSpeechRecognition();">Start</button>
+        <button id="saveButton" onclick="clearText();">Сохранить</button>
+        <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
+        <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
+        <button id="copyTextButton" onclick="copyText();">Скопировать весь текст</button>
+        <button id="deleteBlockButton" onclick="deleteBlock();">Удалить весь блок</button>
+    </div>
 
     <script>
         var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
