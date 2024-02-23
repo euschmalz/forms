@@ -5,51 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голос в текст с редактированием и сохранением</title>
     <style>
-        .button-group, .text-resize-controls {
-            display: flex;
-            justify-content: center;
+        #saveButton, #clearButton, #deleteWordButton, #copyTextButton, #deleteBlockButton {
             margin-top: 15px;
         }
-        .text-resize-controls button {
-            margin: 0 10px;
-        }
         #speechInputField {
-            resize: none;
-            overflow: auto;
+            resize: none; /* Отключаем стандартное изменение размера */
+            overflow: auto; /* Убедитесь, что содержимое правильно прокручивается при изменении размера */
             border: 1px solid #ccc;
             min-height: 100px;
             min-width: 300px;
-            width: 100%;
-            box-sizing: border-box; /* Убедитесь, что ширина включает границы и padding */
-            font-size: 16px; /* Исходный размер текста */
         }
     </style>
 </head>
 <body>
     <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
-    <div class="button-group">
-        <button onclick="startSpeechRecognition();">Start</button>
-        <button id="saveButton" onclick="clearText();">Сохранить</button>
-        <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
-        <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
-        <button id="copyTextButton" onclick="copyText();">Скопировать весь текст</button>
-        <button id="deleteBlockButton" onclick="deleteBlock();">Удалить весь блок</button>
-    </div>
-    <div class="text-resize-controls">
-        <button onclick="resizeText(1);">+</button>
-        <button onclick="resizeText(-1);">-</button>
-        <button onclick="resetTextSize();">Reset</button>
-    </div>
+    <button onclick="startSpeechRecognition();">Start</button>
+    <button id="saveButton" onclick="clearText();">Сохранить</button>
+    <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
+    <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
+    <button id="copyTextButton" onclick="copyText();">Скопировать весь текст</button>
+    <button id="deleteBlockButton" onclick="deleteBlock();">Удалить весь блок</button>
 
     <script>
-        var recognition = new SpeechRecognition() || webkitSpeechRecognition;
+        var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+        var recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.lang = 'ru-RU';
         recognition.interimResults = false;
 
         recognition.onresult = function(event) {
             var transcript = event.results[event.resultIndex][0].transcript;
-            document.getElementById('speechInputField').value += transcript + ' ';
+            var speechInputField = document.getElementById('speechInputField');
+            speechInputField.value += transcript + ' ';
             saveText();
         };
 
@@ -72,22 +59,66 @@
         }
 
         function clearTextInput() {
-            document.getElementById('speechInputField').value = '';
+            var speechInputField = document.getElementById('speechInputField');
+            speechInputField.value = '';
             saveText();
         }
 
-        // Функции deleteWord, copyText, deleteBlock...
-
-        var baseFontSize = 16; // Исходный размер шрифта в пикселях
-        function resizeText(step) {
+        function deleteWord() {
             var textarea = document.getElementById('speechInputField');
-            var currentSize = parseInt(window.getComputedStyle(textarea).fontSize);
-            textarea.style.fontSize = `${currentSize + step}px`;
+            var text = textarea.value;
+            var startPos = textarea.selectionStart;
+            var endPos = textarea.selectionEnd;
+            var beforeText = text.substring(0, startPos);
+            var afterText = text.substring(endPos);
+
+            if (startPos === endPos) {
+                var newBeforeText = beforeText.replace(/[\wа-яА-Я]+(\s*)?$/, '');
+                var newAfterText = afterText.replace(/^(\s*)?[\wа-яА-Я]+/, '');
+                textarea.value = newBeforeText + newAfterText;
+                textarea.selectionStart = textarea.selectionEnd = newBeforeText.length;
+            } else {
+                textarea.value = beforeText + afterText;
+                textarea.selectionStart = textarea.selectionEnd = startPos;
+            }
+
+            saveText();
         }
 
-        function resetTextSize() {
-            document.getElementById('speechInputField').style.fontSize = `${baseFontSize}px`;
+        function copyText() {
+            var speechInputField = document.getElementById('speechInputField');
+            speechInputField.select();
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            alert('Текст скопирован');
         }
+
+        function deleteBlock() {
+            var textarea = document.getElementById('speechInputField');
+            var text = textarea.value;
+            var cursorPos = textarea.selectionStart;
+            var beforeText = text.substring(0, cursorPos);
+            var afterText = text.substring(cursorPos);
+            var startBlockPos = beforeText.lastIndexOf("\n\n") + 2;
+            if (startBlockPos < 2) startBlockPos = 0;
+            var endBlockPos = afterText.indexOf("\n\n");
+            if (endBlockPos === -1) endBlockPos = afterText.length;
+            else endBlockPos += cursorPos + 2;
+
+            textarea.value = text.substring(0, startBlockPos) + text.substring(endBlockPos);
+            textarea.selectionStart = textarea.selectionEnd = startBlockPos;
+            saveText();
+        }
+
+        document.getElementById('speechInputField').addEventListener('touchmove', function(e) {
+            if (e.touches.length === 1) {
+                var touch = e.touches[0];
+                var box = this.getBoundingClientRect();
+                this.style.width = `${Math.max(300, touch.clientX - box.left)}px`;
+                this.style.height = `${Math.max(100, touch.clientY - box.top)}px`;
+                e.preventDefault();
+            }
+        }, { passive: false });
 
         window.onload = function() {
             var savedText = localStorage.getItem('savedText');
