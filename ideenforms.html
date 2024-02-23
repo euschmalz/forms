@@ -176,23 +176,51 @@
             }
         };
 
-            function submitIdea() {
-        var form = document.getElementById('ideaForm');
-        var formData = new FormData(form);
-        var object = {};
-        formData.forEach((value, key) => {object[key] = value});
-        var json = JSON.stringify(object);
+        function submitIdea() {
+    var formData = new FormData(document.getElementById('ideaForm'));
+    var object = {};
+    formData.forEach(function(value, key){
+        object[key] = value;
+    });
+    var json = JSON.stringify(object);
 
-        fetch('https://script.google.com/macros/s/AKfycbyT4eEuRLWxfljmQP-1dIL0wnrAsPdIAPbmlZw-HZWbQzfh4Lh3J16as4YZBClO5ZS8/exec', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: json
-        }).then(response => response.text())
-          .then(text => alert(text))
-          .catch(error => console.error('Ошибка:', error));
-        }
+    fetch('https://script.google.com/macros/s/AKfycbyT4eEuRLWxfljmQP-1dIL0wnrAsPdIAPbmlZw-HZWbQzfh4Lh3J16as4YZBClO5ZS8/exec', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: json
+    })
+    .then(function(response) {
+        return response.text();
+    })
+    .then(function(text) {
+        alert(text);
+    })
+    .catch(function(error) {
+        console.error('Ошибка:', error);
+    });
+}
+
+
+    function doPost(e) {
+    var params = JSON.parse(e.postData.contents);
+
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var startTime = new Date(params.startTime); // Убедитесь, что это поле есть в вашей форме
+    var endTime = new Date(); // Фиксация времени отправки
+    var idea = params.ideaDescription; // Убедитесь, что имя поля совпадает с именем в форме
+
+    var startFormatted = Utilities.formatDate(startTime, Session.getScriptTimeZone(), "dd.MM.yyyy HH:mm");
+    var endFormatted = Utilities.formatDate(endTime, Session.getScriptTimeZone(), "dd.MM.yyyy HH:mm");
+
+    sheet.appendRow([startFormatted, endFormatted, '', idea]);
+
+    return ContentService.createTextOutput("Форма успешно отправлена.");
+}
+
+    
+        
     </script>
 </body>
 </html>
