@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <title>Форма интеграции с Google Таблицами</title>
+</head>
+<body>
+<nav class="container-fluid">
+    <ul>
+        <li><strong>Интеграция с Google Таблицами</strong></li>
+    </ul>
+    <ul>
+        <li><a href="#">Главная</a></li>
+        <li><a href="#">О нас</a></li>
+        <li><a href="#" role="button">Контакты</a></li>
+    </ul>
+</nav>
+<main class="container">
+    <div class="grid">
+        <section>
+            <hgroup>
+                <h2>Форма интеграции</h2>
+                <h3>Подключите свою Google Таблицу</h3>
+            </hgroup>
+            <p>Для начала работы с интеграцией, пожалуйста, заполните форму ниже.</p>
+            <form class="grid">
+                <input type="text" id="spreadsheetId" name="spreadsheetId" placeholder="ID таблицы" aria-label="ID таблицы" required>
+                <input type="email" id="email" name="email" placeholder="Ваш email" aria-label="Ваш email" required>
+                <button type="submit" onclick="event.preventDefault()">Отправить</button>
+            </form>
+        </section>
+    </div>
+</main>
+<footer class="container">
+    <small><a href="#">Политика конфиденциальности</a> • <a href="#">Условия использования</a></small>
+</footer>
+</body>
+</html>
