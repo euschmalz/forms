@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голос в текст с редактированием и сохранением</title>
     <style>
-        #saveButton, #clearButton, #deleteWordButton, #copyTextButton, #deleteBlockButton {
-            margin-top: 15px;
-            margin-right: 5px; /* Добавляем небольшой отступ справа для каждой кнопки */
-        }
         #speechInputField {
             resize: none; /* Отключаем стандартное изменение размера */
             overflow: auto; /* Убедитесь, что содержимое правильно прокручивается при изменении размера */
@@ -17,13 +13,19 @@
             min-width: 300px;
             display: block; /* Убедитесь, что textarea отображается как блочный элемент */
             margin-bottom: 10px; /* Добавляем отступ снизу для textarea */
+            font-size: 16px; /* Устанавливаем начальный размер шрифта для текстового поля */
+        }
+        button {
+            margin-top: 15px;
+            margin-right: 5px; /* Добавляем небольшой отступ справа для каждой кнопки */
+            font-size: 32px; /* Увеличиваем размер шрифта в кнопках */
+            padding: 10px 20px; /* Увеличиваем внутренние отступы для кнопок */
+            cursor: pointer; /* Делаем курсор в виде указателя, чтобы показать, что кнопка кликабельна */
         }
     </style>
 </head>
 <body>
     <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
-    
-    <!-- Кнопки располагаются ниже текстового поля -->
     <button onclick="startSpeechRecognition();">Start</button>
     <button id="saveButton" onclick="clearText();">Сохранить</button>
     <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
