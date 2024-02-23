@@ -60,16 +60,19 @@
             var beforeText = text.substring(0, startPos);
             var afterText = text.substring(endPos);
 
-            if (startPos === endPos) { // Нет выделения текста
-                // Удаляем слово слева от курсора, сохраняя структуру пробелов и переносов строк
-                var newEndPos = beforeText.replace(/(\s+)?\S+(\s*)$/, '$1') + afterText;
-                textarea.value = newEndPos;
-            } else { // Есть выделение текста
+            if (startPos === endPos) {
+                if (afterText.startsWith(' ') || afterText === '') {
+                    beforeText = beforeText.replace(/(\s+)?\S+(\s*)$/, '$1');
+                } else {
+                    afterText = afterText.replace(/^(\s*)\S+(\s+)?/, '$2');
+                }
+                textarea.value = beforeText + afterText;
+                startPos = beforeText.length;
+            } else {
                 textarea.value = beforeText + afterText;
                 startPos = endPos;
             }
 
-            // Восстанавливаем позицию курсора
             textarea.selectionStart = textarea.selectionEnd = startPos;
             saveText();
         }
@@ -89,9 +92,8 @@
             var beforeText = text.substring(0, cursorPos);
             var afterText = text.substring(cursorPos);
             var startBlockPos = beforeText.lastIndexOf("\n\n") + 2;
-            var endBlockPos = afterText.indexOf("\n\n");
-
             if (startBlockPos < 2) startBlockPos = 0;
+            var endBlockPos = afterText.indexOf("\n\n");
             if (endBlockPos === -1) endBlockPos = afterText.length;
             else endBlockPos += cursorPos + 2;
 
