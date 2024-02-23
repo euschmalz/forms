@@ -29,7 +29,7 @@
             var transcript = event.results[event.resultIndex][0].transcript;
             var speechInputField = document.getElementById('speechInputField');
             speechInputField.value += transcript + ' ';
-            saveText(); // Сохраняем текст после каждого распознавания
+            saveText();
         };
 
         function startSpeechRecognition() {
@@ -49,7 +49,7 @@
         function clearTextInput() {
             var speechInputField = document.getElementById('speechInputField');
             speechInputField.value = '';
-            saveText(); // Обновляем сохранённый текст после очистки
+            saveText();
         }
 
         function deleteWord() {
@@ -57,37 +57,28 @@
             var text = textarea.value;
             var startPos = textarea.selectionStart;
             var endPos = textarea.selectionEnd;
+            var beforeText = text.substring(0, startPos);
+            var afterText = text.substring(endPos);
 
-            if (startPos === endPos) {
-                var beforeText = text.substring(0, startPos);
-                var afterText = text.substring(endPos);
-                var beforeWords = beforeText.split(/\s+/);
-                var afterWords = afterText.split(/\s+/);
-
-                if (beforeText.endsWith(' ')) {
-                    beforeWords.pop();
-                } else {
-                    beforeWords.pop();
-                }
-
-                if (!afterText.startsWith(' ')) {
-                    afterWords.shift();
-                }
-
-                textarea.value = beforeWords.join(' ') + ' ' + afterWords.join(' ');
-            } else {
-                textarea.value = text.substring(0, startPos) + text.substring(endPos);
+            if (startPos === endPos) { // Нет выделения текста
+                // Удаляем слово слева от курсора, сохраняя структуру пробелов и переносов строк
+                var newEndPos = beforeText.replace(/(\s+)?\S+(\s*)$/, '$1') + afterText;
+                textarea.value = newEndPos;
+            } else { // Есть выделение текста
+                textarea.value = beforeText + afterText;
+                startPos = endPos;
             }
 
+            // Восстанавливаем позицию курсора
             textarea.selectionStart = textarea.selectionEnd = startPos;
-            saveText(); // Обновляем сохранённый текст после удаления слова
+            saveText();
         }
 
         function copyText() {
             var speechInputField = document.getElementById('speechInputField');
-            speechInputField.select(); // Выделяем весь текст
-            document.execCommand('copy'); // Копируем текст в буфер обмена
-            window.getSelection().removeAllRanges(); // Снимаем выделение текста
+            speechInputField.select();
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
             alert('Текст скопирован');
         }
 
@@ -97,21 +88,14 @@
             var cursorPos = textarea.selectionStart;
             var beforeText = text.substring(0, cursorPos);
             var afterText = text.substring(cursorPos);
-
-            // Находим начало блока
             var startBlockPos = beforeText.lastIndexOf("\n\n") + 2;
-            if (startBlockPos < 2) startBlockPos = 0; // Если двойных переносов нет, начало текста
-
-            // Находим конец блока
             var endBlockPos = afterText.indexOf("\n\n");
-            if (endBlockPos === -1) endBlockPos = afterText.length; // Если двойных переносов нет, конец текста
+
+            if (startBlockPos < 2) startBlockPos = 0;
+            if (endBlockPos === -1) endBlockPos = afterText.length;
             else endBlockPos += cursorPos + 2;
 
-            // Удаляем блок
-            var newText = text.substring(0, startBlockPos) + text.substring(endBlockPos);
-            textarea.value = newText;
-
-            // Обновляем позицию курсора и сохраняем изменения
+            textarea.value = text.substring(0, startBlockPos) + text.substring(endBlockPos);
             textarea.selectionStart = textarea.selectionEnd = startBlockPos;
             saveText();
         }
