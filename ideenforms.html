@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голос в текст с редактированием и сохранением</title>
-    <link rel="icon" type="image/x-icon" href="https://euschmalz.github.io/forms/favicon_ideja_2.webp">
+    <link rel="icon" type="image/x-icon" href="https://euschmalz.github.io/forms/favicon_ideja.ico">
     <style>
         body {
             display: flex;
@@ -28,24 +28,24 @@
             min-height: 100px;
             width: 100%;
             box-sizing: border-box;
-            font-size: 16px; /* Установлен начальный размер шрифта */
+            font-size: 18px; /* Размер шрифта текста в текстовом поле */
         }
-        .buttons-container {
-            display: flex;
-            justify-content: flex-start;
-            flex-wrap: wrap;
+        .buttons-container, .text-size-slider {
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Выравнивание кнопок и слайдера по левому краю */
             padding-top: 10px;
         }
-        button, .text-size-slider {
-            font-size: 16px; /* Размер шрифта для кнопок адаптирован */
+        button {
+            font-size: 16px; /* Размер шрифта кнопок */
             padding: 10px 20px;
             cursor: pointer;
             margin-right: 10px;
             margin-bottom: 10px;
         }
         .text-size-slider input[type="range"] {
-            width: 100%;
+            width: 100%; /* Ширина слайдера */
             cursor: pointer;
         }
     </style>
@@ -55,14 +55,14 @@
         <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
         <div class="text-size-slider">
             <label for="fontSizeRange">Размер текста:</label>
-            <input type="range" id="fontSizeRange" min="8" max="48" value="16">
+            <input type="range" id="fontSizeRange" min="8" max="48" value="18">
         </div>
         <div class="buttons-container">
-            <button onclick="startSpeechRecognition();">Голос в текст</button>
+            <button onclick="startSpeechRecognition();">Start</button>
             <button id="saveButton" onclick="clearText();">Сохранить</button>
             <button id="clearButton" onclick="clearTextInput();">Очистить</button>
             <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
-            <button id="copyTextButton" onclick="copyText();">Скопировать всё</button>
+            <button id="copyTextButton" onclick="copyText();">Скопировать текст</button>
             <button id="deleteBlockButton" onclick="deleteBlock();">Удалить блок</button>
         </div>
     </div>
@@ -114,14 +114,13 @@
             var text = textarea.value;
             var startPos = textarea.selectionStart;
             var endPos = textarea.selectionEnd;
-            if (startPos === endPos) { // Нет выделенного текста
-                // Удаляем слово слева от курсора
-                var beforeCursor = text.substring(0, startPos);
-                var newBeforeCursor = beforeCursor.replace(/\s?\w+$/, '');
-                textarea.value = newBeforeCursor + text.substring(endPos);
-                textarea.selectionStart = textarea.selectionEnd = newBeforeCursor.length;
+            if (startPos === endPos) {
+                // Удаление слова слева от курсора
+                var beforeText = text.substring(0, startPos).replace(/[\wа-яА-Я]+(\s*)?$/, '');
+                textarea.value = beforeText + text.substring(endPos);
+                textarea.selectionStart = textarea.selectionEnd = beforeText.length;
             } else {
-                // Удаляем выделенный текст
+                // Удаление выделенного текста
                 textarea.value = text.substring(0, startPos) + text.substring(endPos);
                 textarea.selectionStart = textarea.selectionEnd = startPos;
             }
@@ -140,11 +139,16 @@
             var textarea = document.getElementById('speechInputField');
             var text = textarea.value;
             var cursorPos = textarea.selectionStart;
-            var startOfLine = text.lastIndexOf('\n', cursorPos - 1) + 1;
-            var endOfLine = text.indexOf('\n', cursorPos);
-            if (endOfLine === -1) endOfLine = text.length;
-            textarea.value = text.substring(0, startOfLine) + text.substring(endOfLine);
-            textarea.selectionStart = textarea.selectionEnd = startOfLine;
+            var beforeText = text.substring(0, cursorPos);
+            var afterText = text.substring(cursorPos);
+            var startBlockPos = beforeText.lastIndexOf("\n\n") + 2;
+            if (startBlockPos < 2) startBlockPos = 0;
+            var endBlockPos = afterText.indexOf("\n\n");
+            if (endBlockPos === -1) endBlockPos = afterText.length;
+            else endBlockPos += cursorPos + 2;
+
+            textarea.value = text.substring(0, startBlockPos) + text.substring(endBlockPos);
+            textarea.selectionStart = textarea.selectionEnd = startBlockPos;
             saveText();
         }
 
@@ -152,6 +156,10 @@
             var savedText = localStorage.getItem('savedText');
             if (savedText) {
                 document.getElementById('speechInputField').value = savedText;
+            }
+            var fontSizeRange = document.getElementById('fontSizeRange');
+            if(fontSizeRange) {
+                document.getElementById('speechInputField').style.fontSize = fontSizeRange.value + 'px';
             }
         };
     </script>
