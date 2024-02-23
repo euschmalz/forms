@@ -60,25 +60,22 @@ function deleteWord() {
     var beforeText = text.substring(0, startPos);
     var afterText = text.substring(endPos);
 
-    // Если нет выделения текста
-    if (startPos === endPos) {
-        // Удаляем слово слева от курсора
-        var newBeforeText = beforeText.replace(/(\s+)?\S+(\s*)?$/, '');
-        
-        // Удаляем слово справа от курсора
-        var newAfterText = afterText.replace(/^(\s*)?\S+(\s+)?/, '');
+    if (startPos === endPos) { // Если нет выделения текста
+        // Изменяем регулярное выражение для удаления слов, оставляя знаки препинания
+        var newBeforeText = beforeText.replace(/[\wа-яА-Я]+(\s*)?$/, '');
+        var newAfterText = afterText.replace(/^(\s*)?[\wа-яА-Я]+/, '');
 
-        // Если после удаления слов курсор не в начале текста, добавляем пробел
-        var finalText = newBeforeText + (newBeforeText.length > 0 ? " " : "") + newAfterText;
+        // Соединяем текст, добавляя пробел между частями, если и до, и после курсора есть текст
+        var finalText = newBeforeText + (newBeforeText && newAfterText ? " " : "") + newAfterText;
 
         // Обновляем текст
         textarea.value = finalText;
 
-        // Корректируем позицию курсора. Если было удалено слово слева, курсор смещаем влево на один пробел
-        var newPos = newBeforeText.length + (newBeforeText.length > 0 ? 1 : 0);
+        // Корректируем позицию курсора
+        var newPos = newBeforeText.length + (newBeforeText && newAfterText ? 1 : 0);
         textarea.selectionStart = textarea.selectionEnd = newPos;
-    } else {
-        // Если текст выделен, удаляем выделенный текст и оставляем один пробел
+    } else { // Если текст выделен
+        // Удаляем выделенный текст, оставляя один пробел
         textarea.value = beforeText + " " + afterText;
         textarea.selectionStart = textarea.selectionEnd = startPos + 1;
     }
