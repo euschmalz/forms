@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Голос в текст с редактированием</title>
+    <title>Голос в текст с редактированием и сохранением</title>
     <style>
         #saveButton, #clearButton, #deleteWordButton {
             margin-top: 10px;
@@ -11,7 +11,7 @@
     </style>
 </head>
 <body>
-    <textarea id="speechInputField" rows="10" cols="50"></textarea>
+    <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
     <button onclick="startSpeechRecognition();">Start</button>
     <button id="saveButton" onclick="clearText();">Сохранить</button>
     <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
@@ -27,11 +27,16 @@
             var transcript = event.results[event.resultIndex][0].transcript;
             var speechInputField = document.getElementById('speechInputField');
             speechInputField.value += transcript + ' ';
-            localStorage.setItem('savedText', speechInputField.value);
+            saveText(); // Сохраняем текст после каждого распознавания
         };
 
         function startSpeechRecognition() {
             recognition.start();
+        }
+
+        function saveText() {
+            var speechInputField = document.getElementById('speechInputField');
+            localStorage.setItem('savedText', speechInputField.value);
         }
 
         function clearText() {
@@ -42,7 +47,7 @@
         function clearTextInput() {
             var speechInputField = document.getElementById('speechInputField');
             speechInputField.value = '';
-            localStorage.setItem('savedText', speechInputField.value);
+            saveText(); // Обновляем сохранённый текст после очистки
         }
 
         function deleteWord() {
@@ -51,32 +56,29 @@
             var startPos = textarea.selectionStart;
             var endPos = textarea.selectionEnd;
 
-            if (startPos === endPos) { // Нет выделения текста
+            if (startPos === endPos) {
                 var beforeText = text.substring(0, startPos);
                 var afterText = text.substring(endPos);
-
-                // Удаление слова слева, если курсор находится в конце слова
                 var beforeWords = beforeText.split(/\s+/);
+                var afterWords = afterText.split(/\s+/);
+
                 if (beforeText.endsWith(' ')) {
-                    beforeWords.pop(); // Удаляем пустую строку после последнего пробела
+                    beforeWords.pop();
                 } else {
-                    beforeWords.pop(); // Удаляем последнее слово перед курсором
+                    beforeWords.pop();
                 }
 
-                // Удаление слова справа, если курсор находится в начале слова
-                var afterWords = afterText.split(/\s+/);
                 if (!afterText.startsWith(' ')) {
-                    afterWords.shift(); // Удаляем первое слово после курсора
+                    afterWords.shift();
                 }
 
                 textarea.value = beforeWords.join(' ') + ' ' + afterWords.join(' ');
-            } else { // Есть выделение текста
+            } else {
                 textarea.value = text.substring(0, startPos) + text.substring(endPos);
             }
 
-            // Обновляем позицию курсора и сохраняем текст
             textarea.selectionStart = textarea.selectionEnd = startPos;
-            localStorage.setItem('savedText', textarea.value);
+            saveText(); // Обновляем сохранённый текст после удаления слова
         }
 
         window.onload = function() {
