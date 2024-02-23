@@ -11,7 +11,7 @@
     </style>
 </head>
 <body>
-    <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
+    <textarea id="speechInputField" rows="20" cols="100" oninput="saveText()"></textarea>
     <button onclick="startSpeechRecognition();">Start</button>
     <button id="saveButton" onclick="clearText();">Сохранить</button>
     <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
@@ -20,8 +20,9 @@
     <button id="deleteBlockButton" onclick="deleteBlock();">Удалить весь блок</button>
 
     <script>
-        var recognition = new webkitSpeechRecognition();
-        recognition.continuous = false;
+        var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+        var recognition = new SpeechRecognition();
+        recognition.continuous = true;
         recognition.lang = 'ru-RU';
         recognition.interimResults = false;
 
@@ -32,8 +33,16 @@
             saveText();
         };
 
+        recognition.onerror = function(event) {
+            console.error('Ошибка распознавания речи: ', event.error);
+        };
+
         function startSpeechRecognition() {
-            recognition.start();
+            try {
+                recognition.start();
+            } catch (e) {
+                console.error('Ошибка при запуске распознавания речи: ', e);
+            }
         }
 
         function saveText() {
@@ -52,36 +61,26 @@
             saveText();
         }
 
-function deleteWord() {
-    var textarea = document.getElementById('speechInputField');
-    var text = textarea.value;
-    var startPos = textarea.selectionStart;
-    var endPos = textarea.selectionEnd;
-    var beforeText = text.substring(0, startPos);
-    var afterText = text.substring(endPos);
+        function deleteWord() {
+            var textarea = document.getElementById('speechInputField');
+            var text = textarea.value;
+            var startPos = textarea.selectionStart;
+            var endPos = textarea.selectionEnd;
+            var beforeText = text.substring(0, startPos);
+            var afterText = text.substring(endPos);
 
-    // Если нет выделения текста
-    if (startPos === endPos) {
-        // Удаляем слово или пробелы непосредственно перед курсором, сохраняя знаки препинания
-        var newBeforeText = beforeText.replace(/[\wа-яА-Я]+(\s*)?$|(\s+)$/, '');
-        
-        // Удаляем слово или пробелы непосредственно после курсора, сохраняя знаки препинания
-        var newAfterText = afterText.replace(/^(\s*)?[\wа-яА-Я]+|^(?=\s)/, '');
+            if (startPos === endPos) {
+                var newBeforeText = beforeText.replace(/[\wа-яА-Я]+(\s*)?$/, '');
+                var newAfterText = afterText.replace(/^(\s*)?[\wа-яА-Я]+/, '');
+                textarea.value = newBeforeText + newAfterText;
+                textarea.selectionStart = textarea.selectionEnd = newBeforeText.length;
+            } else {
+                textarea.value = beforeText + afterText;
+                textarea.selectionStart = textarea.selectionEnd = startPos;
+            }
 
-        textarea.value = newBeforeText + newAfterText;
-
-        // Корректируем позицию курсора
-        textarea.selectionStart = textarea.selectionEnd = newBeforeText.length;
-    } else {
-        // Если текст выделен, удаляем выделенный текст
-        textarea.value = beforeText + afterText;
-        textarea.selectionStart = textarea.selectionEnd = startPos;
-    }
-
-    saveText();
-}
-
-
+            saveText();
+        }
 
         function copyText() {
             var speechInputField = document.getElementById('speechInputField');
