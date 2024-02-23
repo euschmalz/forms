@@ -42,18 +42,40 @@
         function clearTextInput() {
             var speechInputField = document.getElementById('speechInputField');
             speechInputField.value = '';
+            localStorage.setItem('savedText', speechInputField.value);
         }
 
         function deleteWord() {
             var textarea = document.getElementById('speechInputField');
             var text = textarea.value;
-            var cursorPos = textarea.selectionStart;
-            var beforeText = text.substring(0, cursorPos);
-            var afterText = text.substring(cursorPos);
-            var wordsBefore = beforeText.split(/\s+/);
-            wordsBefore.pop(); // Удаляем последнее слово перед курсором
-            var newText = wordsBefore.join(' ') + ' ' + afterText;
-            textarea.value = newText.trim() + ' '; // Добавляем пробел в конец, если удаляем не последнее слово
+            var startPos = textarea.selectionStart;
+            var endPos = textarea.selectionEnd;
+
+            if (startPos === endPos) { // Нет выделения текста
+                var beforeText = text.substring(0, startPos);
+                var afterText = text.substring(endPos);
+
+                // Удаление слова слева, если курсор находится в конце слова
+                var beforeWords = beforeText.split(/\s+/);
+                if (beforeText.endsWith(' ')) {
+                    beforeWords.pop(); // Удаляем пустую строку после последнего пробела
+                } else {
+                    beforeWords.pop(); // Удаляем последнее слово перед курсором
+                }
+
+                // Удаление слова справа, если курсор находится в начале слова
+                var afterWords = afterText.split(/\s+/);
+                if (!afterText.startsWith(' ')) {
+                    afterWords.shift(); // Удаляем первое слово после курсора
+                }
+
+                textarea.value = beforeWords.join(' ') + ' ' + afterWords.join(' ');
+            } else { // Есть выделение текста
+                textarea.value = text.substring(0, startPos) + text.substring(endPos);
+            }
+
+            // Обновляем позицию курсора и сохраняем текст
+            textarea.selectionStart = textarea.selectionEnd = startPos;
             localStorage.setItem('savedText', textarea.value);
         }
 
