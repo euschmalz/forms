@@ -53,11 +53,42 @@
         }
 
         function deleteWord() {
-            // Функция удаления слова, предоставленная ранее
+            var textarea = document.getElementById('speechInputField');
+            var text = textarea.value;
+            var startPos = textarea.selectionStart;
+            var endPos = textarea.selectionEnd;
+
+            if (startPos === endPos) {
+                var beforeText = text.substring(0, startPos);
+                var afterText = text.substring(endPos);
+                var beforeWords = beforeText.split(/\s+/);
+                var afterWords = afterText.split(/\s+/);
+
+                if (beforeText.endsWith(' ')) {
+                    beforeWords.pop();
+                } else {
+                    beforeWords.pop();
+                }
+
+                if (!afterText.startsWith(' ')) {
+                    afterWords.shift();
+                }
+
+                textarea.value = beforeWords.join(' ') + ' ' + afterWords.join(' ');
+            } else {
+                textarea.value = text.substring(0, startPos) + text.substring(endPos);
+            }
+
+            textarea.selectionStart = textarea.selectionEnd = startPos;
+            saveText(); // Обновляем сохранённый текст после удаления слова
         }
 
         function copyText() {
-            // Функция копирования текста, предоставленная ранее
+            var speechInputField = document.getElementById('speechInputField');
+            speechInputField.select(); // Выделяем весь текст
+            document.execCommand('copy'); // Копируем текст в буфер обмена
+            window.getSelection().removeAllRanges(); // Снимаем выделение текста
+            alert('Текст скопирован');
         }
 
         function deleteBlock() {
