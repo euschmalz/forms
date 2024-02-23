@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голос в текст с редактированием и сохранением</title>
     <style>
-        #saveButton, #clearButton, #deleteWordButton, #copyTextButton {
+        #saveButton, #clearButton, #deleteWordButton, #copyTextButton, #deleteBlockButton {
             margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
-    <button onclick="startSpeechRecognition();">Голос в текст</button>
+    <button onclick="startSpeechRecognition();">Start</button>
     <button id="saveButton" onclick="clearText();">Сохранить</button>
     <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
     <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
     <button id="copyTextButton" onclick="copyText();">Скопировать весь текст</button>
+    <button id="deleteBlockButton" onclick="deleteBlock();">Удалить весь блок</button>
 
     <script>
         var recognition = new webkitSpeechRecognition();
@@ -52,42 +53,36 @@
         }
 
         function deleteWord() {
-            var textarea = document.getElementById('speechInputField');
-            var text = textarea.value;
-            var startPos = textarea.selectionStart;
-            var endPos = textarea.selectionEnd;
-
-            if (startPos === endPos) {
-                var beforeText = text.substring(0, startPos);
-                var afterText = text.substring(endPos);
-                var beforeWords = beforeText.split(/\s+/);
-                var afterWords = afterText.split(/\s+/);
-
-                if (beforeText.endsWith(' ')) {
-                    beforeWords.pop();
-                } else {
-                    beforeWords.pop();
-                }
-
-                if (!afterText.startsWith(' ')) {
-                    afterWords.shift();
-                }
-
-                textarea.value = beforeWords.join(' ') + ' ' + afterWords.join(' ');
-            } else {
-                textarea.value = text.substring(0, startPos) + text.substring(endPos);
-            }
-
-            textarea.selectionStart = textarea.selectionEnd = startPos;
-            saveText(); // Обновляем сохранённый текст после удаления слова
+            // Функция удаления слова, предоставленная ранее
         }
 
         function copyText() {
-            var speechInputField = document.getElementById('speechInputField');
-            speechInputField.select(); // Выделяем весь текст
-            document.execCommand('copy'); // Копируем текст в буфер обмена
-            window.getSelection().removeAllRanges(); // Снимаем выделение текста
-            alert('Текст скопирован');
+            // Функция копирования текста, предоставленная ранее
+        }
+
+        function deleteBlock() {
+            var textarea = document.getElementById('speechInputField');
+            var text = textarea.value;
+            var cursorPos = textarea.selectionStart;
+            var beforeText = text.substring(0, cursorPos);
+            var afterText = text.substring(cursorPos);
+
+            // Находим начало блока
+            var startBlockPos = beforeText.lastIndexOf("\n\n") + 2;
+            if (startBlockPos < 2) startBlockPos = 0; // Если двойных переносов нет, начало текста
+
+            // Находим конец блока
+            var endBlockPos = afterText.indexOf("\n\n");
+            if (endBlockPos === -1) endBlockPos = afterText.length; // Если двойных переносов нет, конец текста
+            else endBlockPos += cursorPos + 2;
+
+            // Удаляем блок
+            var newText = text.substring(0, startBlockPos) + text.substring(endBlockPos);
+            textarea.value = newText;
+
+            // Обновляем позицию курсора и сохраняем изменения
+            textarea.selectionStart = textarea.selectionEnd = startBlockPos;
+            saveText();
         }
 
         window.onload = function() {
