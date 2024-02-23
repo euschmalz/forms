@@ -52,30 +52,34 @@
             saveText();
         }
 
-        function deleteWord() {
-            var textarea = document.getElementById('speechInputField');
-            var text = textarea.value;
-            var startPos = textarea.selectionStart;
-            var endPos = textarea.selectionEnd;
-            var beforeText = text.substring(0, startPos);
-            var afterText = text.substring(endPos);
+function deleteWord() {
+    var textarea = document.getElementById('speechInputField');
+    var text = textarea.value;
+    var startPos = textarea.selectionStart;
+    var endPos = textarea.selectionEnd;
+    var beforeText = text.substring(0, startPos);
+    var afterText = text.substring(endPos);
 
-            if (startPos === endPos) {
-                if (afterText.startsWith(' ') || afterText === '') {
-                    beforeText = beforeText.replace(/(\s+)?\S+(\s*)$/, '$1');
-                } else {
-                    afterText = afterText.replace(/^(\s*)\S+(\s+)?/, '$2');
-                }
-                textarea.value = beforeText + afterText;
-                startPos = beforeText.length;
-            } else {
-                textarea.value = beforeText + afterText;
-                startPos = endPos;
-            }
+    // Если нет выделения текста
+    if (startPos === endPos) {
+        // Удаляем слово слева от курсора, если есть
+        var newBeforeText = beforeText.replace(/(\s+)?\S+(\s*)?$/, '');
+        
+        // Удаляем слово справа от курсора, если слева пробел или курсор в начале строки
+        var newAfterText = afterText.replace(/^(\s*)?\S+(\s+)?/, '');
+        
+        // Обновляем текст и корректируем позицию курсора
+        textarea.value = newBeforeText + newAfterText;
+        var newPos = newBeforeText.length;
+        textarea.selectionStart = textarea.selectionEnd = newPos;
+    } else {
+        // Если текст выделен, удаляем выделенный текст
+        textarea.value = beforeText + afterText;
+        textarea.selectionStart = textarea.selectionEnd = startPos;
+    }
 
-            textarea.selectionStart = textarea.selectionEnd = startPos;
-            saveText();
-        }
+    saveText();
+}
 
         function copyText() {
             var speechInputField = document.getElementById('speechInputField');
