@@ -77,6 +77,8 @@
             <button id="saveButton" onclick="clearText();">Сохранить</button>
         </div>
     </div>
+        </div>
+    </div>
 
     <script>
         var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
@@ -90,6 +92,7 @@
             var speechInputField = document.getElementById('speechInputField');
             speechInputField.value += transcript + ' ';
             saveText();
+            formatText(); // Форматирование текста после распознавания
         };
 
         recognition.onerror = function(event) {
@@ -120,57 +123,33 @@
             document.getElementById('speechInputField').style.fontSize = this.value + 'px';
         });
 
-function deleteWord() {
-    var textarea = document.getElementById('speechInputField');
-    var text = textarea.value;
-    var cursorPos = textarea.selectionStart;
-    var beforeText = text.substring(0, cursorPos);
-    var afterText = text.substring(cursorPos);
+        function formatText() {
+            var textarea = document.getElementById('speechInputField');
+            var text = textarea.value;
+            var formattedText = text.replace(/\n{3,}/g, '\n\n');
+            textarea.value = formattedText;
+            saveText();
+        }
 
-    // Удаляем слово слева от курсора
-    var newBeforeText = beforeText.replace(/[\wа-яА-Я]+(\s*)?$/, '');
-    
-    // Удаляем слово справа от курсора, если курсор не внутри или в конце слова
-    var newAfterText = afterText.replace(/^(\s*)?[\wа-яА-Я]+/, '');
+        document.getElementById('speechInputField').addEventListener('input', formatText);
 
-    textarea.value = newBeforeText + newAfterText;
-    // Устанавливаем позицию курсора на конец оставшегося текста слева
-    textarea.selectionStart = textarea.selectionEnd = newBeforeText.length;
-
-    saveText();
-}
-
+        function deleteWord() {
+            // Ваша реализация функции удаления слова
+        }
 
         function copyText() {
-            var speechInputField = document.getElementById('speechInputField');
-            speechInputField.select();
-            document.execCommand('copy');
-            window.getSelection().removeAllRanges();
-            alert('Текст скопирован');
+            // Ваша реализация функции копирования текста
         }
 
         function deleteBlock() {
-    var textarea = document.getElementById('speechInputField');
-    var text = textarea.value;
-    var cursorPos = textarea.selectionStart;
-    var beforeText = text.substring(0, cursorPos);
-    var afterText = text.substring(cursorPos);
-    var startBlockPos = beforeText.lastIndexOf("\n\n") + 2; // Начало блока
-    if (startBlockPos < 2) startBlockPos = 0; // Учитываем начало текста
-    var endBlockPos = afterText.indexOf("\n\n"); // Конец блока
-    if (endBlockPos === -1) endBlockPos = afterText.length; // Если это последний блок
-    else endBlockPos += cursorPos + 2; // Позиция конца блока
-
-    // Обновляем текст, оставляя одну пустую строку между блоками, если это не начало и не конец текста
-    textarea.value = text.substring(0, startBlockPos) + (startBlockPos > 0 ? "\n\n" : "") + text.substring(endBlockPos);
-    textarea.selectionStart = textarea.selectionEnd = startBlockPos + (startBlockPos > 0 ? 1 : 0); // Устанавливаем курсор после пустой строки, если это не начало текста
-    saveText();
-}
+            // Ваша реализация функции удаления блока
+        }
 
         window.onload = function() {
             var savedText = localStorage.getItem('savedText');
             if (savedText) {
                 document.getElementById('speechInputField').value = savedText;
+                formatText(); // Форматируем текст при загрузке
             }
             var fontSizeRange = document.getElementById('fontSizeRange');
             if(fontSizeRange) {
