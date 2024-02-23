@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голос в текст с редактированием и сохранением</title>
-    <link rel="icon" type="image/x-icon" href="https://euschmalz.github.io/forms/favicon_ideja.ico">
+    <link rel="icon" type="image/x-icon" href="https://euschmalz.github.io/forms/favicon_ideja_2.webp">
     <style>
         body {
             display: flex;
@@ -28,6 +28,7 @@
             min-height: 100px;
             width: 100%;
             box-sizing: border-box;
+            font-size: 16px; /* Установлен начальный размер шрифта */
         }
         .buttons-container {
             display: flex;
@@ -37,7 +38,7 @@
             padding-top: 10px;
         }
         button, .text-size-slider {
-            font-size: 16px;
+            font-size: 16px; /* Размер шрифта для кнопок адаптирован */
             padding: 10px 20px;
             cursor: pointer;
             margin-right: 10px;
@@ -109,7 +110,22 @@
         });
 
         function deleteWord() {
-            // Ваша реализация функции удаления слова
+            var textarea = document.getElementById('speechInputField');
+            var text = textarea.value;
+            var startPos = textarea.selectionStart;
+            var endPos = textarea.selectionEnd;
+            if (startPos === endPos) { // Нет выделенного текста
+                // Удаляем слово слева от курсора
+                var beforeCursor = text.substring(0, startPos);
+                var newBeforeCursor = beforeCursor.replace(/\s?\w+$/, '');
+                textarea.value = newBeforeCursor + text.substring(endPos);
+                textarea.selectionStart = textarea.selectionEnd = newBeforeCursor.length;
+            } else {
+                // Удаляем выделенный текст
+                textarea.value = text.substring(0, startPos) + text.substring(endPos);
+                textarea.selectionStart = textarea.selectionEnd = startPos;
+            }
+            saveText();
         }
 
         function copyText() {
@@ -121,7 +137,15 @@
         }
 
         function deleteBlock() {
-            // Ваша реализация функции удаления блока
+            var textarea = document.getElementById('speechInputField');
+            var text = textarea.value;
+            var cursorPos = textarea.selectionStart;
+            var startOfLine = text.lastIndexOf('\n', cursorPos - 1) + 1;
+            var endOfLine = text.indexOf('\n', cursorPos);
+            if (endOfLine === -1) endOfLine = text.length;
+            textarea.value = text.substring(0, startOfLine) + text.substring(endOfLine);
+            textarea.selectionStart = textarea.selectionEnd = startOfLine;
+            saveText();
         }
 
         window.onload = function() {
