@@ -174,6 +174,24 @@
                 document.getElementById('speechInputField').style.fontSize = fontSizeRange.value + 'px';
             }
         };
+
+        function submitIdea() {
+            var form = document.getElementById('ideaForm');
+            var formData = new FormData(form);
+            var object = {};
+            formData.forEach((value, key) => {object[key] = value});
+            var json = JSON.stringify(object);
+
+            fetch('https://script.google.com/macros/s/AKfycbyT4eEuRLWxfljmQP-1dIL0wnrAsPdIAPbmlZw-HZWbQzfh4Lh3J16as4YZBClO5ZS8/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: json
+            }).then(response => response.text())
+              .then(text => alert(text))
+              .catch(error => console.error('Ошибка:', error));
+        
     </script>
 </body>
 </html>
