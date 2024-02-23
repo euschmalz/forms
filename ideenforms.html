@@ -4,60 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голос в текст с редактированием и сохранением</title>
-    <link rel="icon" type="image/x-icon" href="https://euschmalz.github.io/forms/favicon_ideja.ico">
+    <link rel="icon" href="https://euschmalz.github.io/forms/favicon_ideja.ico">
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
-            margin: 0;
-            padding-top: 20px;
-        }
-        .form-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 600px;
-        }
-        #speechInputField {
-            resize: both;
-            overflow: auto;
-            border: 1px solid #ccc;
-            min-height: 100px;
-            width: 100%;
-            box-sizing: border-box;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        .controls-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            flex-wrap: wrap;
-        }
-        .text-size-slider {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .buttons-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        button {
-            font-size: 16px;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        .text-size-slider input[type="range"] {
-            width: 100%;
-            cursor: pointer;
-        }
+        body { display: flex; justify-content: center; align-items: flex-start; height: 100vh; margin: 0; padding-top: 20px; }
+        .form-container { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px; }
+        #speechInputField, .text-size-slider input[type="range"] { width: 100%; }
+        #speechInputField { resize: both; overflow: auto; border: 1px solid #ccc; min-height: 100px; box-sizing: border-box; font-size: 18px; margin-bottom: 10px; }
+        .controls-container, .buttons-container { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; width: 100%; }
+        .text-size-slider { margin-bottom: 10px; }
+        button { font-size: 16px; padding: 10px 20px; cursor: pointer; margin: 5px; }
     </style>
 </head>
 <body>
@@ -74,13 +29,13 @@
                 <button id="clearButton" onclick="clearTextInput();">Очистить</button>
                 <button id="deleteBlockButton" onclick="deleteBlock();">Удалить блок</button>
                 <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
-                <button id="saveButton" onclick="clearText();">Отправить</button>
+                <button id="saveButton" onclick="submitIdea();">Отправить</button>
             </div>
         </div>
     </div>
 
     <script>
-        var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+   var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
         var recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.lang = 'ru-RU';
