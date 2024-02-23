@@ -176,8 +176,9 @@
             }
         };
 
-        function submitIdea() {
-    var formData = new FormData(document.getElementById('ideaForm'));
+ function submitIdea() {
+    var form = document.getElementById('ideaForm'); // Убедитесь, что у вашей формы есть атрибут id="ideaForm"
+    var formData = new FormData(form);
     var object = {};
     formData.forEach(function(value, key){
         object[key] = value;
@@ -196,11 +197,14 @@
     })
     .then(function(text) {
         alert(text);
+        form.reset(); // Очистить форму после успешной отправки
+        // Если есть необходимость обнулить специфические поля или выполнить дополнительные действия, делайте это здесь
     })
     .catch(function(error) {
         console.error('Ошибка:', error);
     });
 }
+
 
 
     function doPost(e) {
