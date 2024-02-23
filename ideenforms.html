@@ -7,6 +7,7 @@
     <style>
         #saveButton, #clearButton, #deleteWordButton, #copyTextButton, #deleteBlockButton {
             margin-top: 15px;
+            margin-right: 5px; /* Добавляем небольшой отступ справа для каждой кнопки */
         }
         #speechInputField {
             resize: none; /* Отключаем стандартное изменение размера */
@@ -14,11 +15,15 @@
             border: 1px solid #ccc;
             min-height: 100px;
             min-width: 300px;
+            display: block; /* Убедитесь, что textarea отображается как блочный элемент */
+            margin-bottom: 10px; /* Добавляем отступ снизу для textarea */
         }
     </style>
 </head>
 <body>
     <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
+    
+    <!-- Кнопки располагаются ниже текстового поля -->
     <button onclick="startSpeechRecognition();">Start</button>
     <button id="saveButton" onclick="clearText();">Сохранить</button>
     <button id="clearButton" onclick="clearTextInput();">Очистить текст</button>
