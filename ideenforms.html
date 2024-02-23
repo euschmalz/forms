@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Голос в текст с редактированием и сохранением</title>
-    <link rel="icon" type="image/x-icon" href="https://euschmalz.github.io/forms/favicon_ideja.ico">
+    <link rel="icon" type="image/x-icon" href="https://euschmalz.github.io/forms/favicon_ideja_2.webp">
     <style>
         body {
             display: flex;
@@ -28,24 +28,34 @@
             min-height: 100px;
             width: 100%;
             box-sizing: border-box;
-            font-size: 18px; /* Размер шрифта текста в текстовом поле */
+            font-size: 18px; /* Установлен начальный размер шрифта для текстового поля */
+            margin-bottom: 10px; /* Добавляем отступ снизу для textarea */
         }
-        .buttons-container, .text-size-slider {
-            width: 100%;
+        .controls-container {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start; /* Выравнивание кнопок и слайдера по левому краю */
-            padding-top: 10px;
+            justify-content: space-between; /* Выравнивание элементов контейнера */
+            align-items: center;
+            width: 100%;
+            flex-wrap: wrap; /* Обеспечивает перенос кнопок при нехватке места */
         }
-        button {
-            font-size: 16px; /* Размер шрифта кнопок */
-            padding: 10px 20px;
-            cursor: pointer;
-            margin-right: 10px;
+        .text-size-slider {
+            width: 100%;
             margin-bottom: 10px;
         }
+        .buttons-container {
+            display: flex;
+            justify-content: center; /* Центрируем кнопки */
+            align-items: center;
+            flex-wrap: wrap; /* Обеспечивает перенос кнопок при нехватке места */
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 5px;
+        }
         .text-size-slider input[type="range"] {
-            width: 100%; /* Ширина слайдера */
+            width: 100%;
             cursor: pointer;
         }
     </style>
@@ -53,10 +63,11 @@
 <body>
     <div class="form-container">
         <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
-        <div class="text-size-slider">
-            <label for="fontSizeRange">Размер текста:</label>
-            <input type="range" id="fontSizeRange" min="8" max="48" value="18">
-        </div>
+        <div class="controls-container">
+            <div class="text-size-slider">
+                <label for="fontSizeRange">Размер текста:</label>
+                <input type="range" id="fontSizeRange" min="8" max="48" value="18">
+            </div>
         <div class="buttons-container">
             <button onclick="startSpeechRecognition();">Голос в текст</button>
             <button id="copyTextButton" onclick="copyText();">Скопировать всё</button>
@@ -109,23 +120,26 @@
             document.getElementById('speechInputField').style.fontSize = this.value + 'px';
         });
 
-        function deleteWord() {
-            var textarea = document.getElementById('speechInputField');
-            var text = textarea.value;
-            var startPos = textarea.selectionStart;
-            var endPos = textarea.selectionEnd;
-            if (startPos === endPos) {
-                // Удаление слова слева от курсора
-                var beforeText = text.substring(0, startPos).replace(/[\wа-яА-Я]+(\s*)?$/, '');
-                textarea.value = beforeText + text.substring(endPos);
-                textarea.selectionStart = textarea.selectionEnd = beforeText.length;
-            } else {
-                // Удаление выделенного текста
-                textarea.value = text.substring(0, startPos) + text.substring(endPos);
-                textarea.selectionStart = textarea.selectionEnd = startPos;
-            }
-            saveText();
-        }
+function deleteWord() {
+    var textarea = document.getElementById('speechInputField');
+    var text = textarea.value;
+    var cursorPos = textarea.selectionStart;
+    var beforeText = text.substring(0, cursorPos);
+    var afterText = text.substring(cursorPos);
+
+    // Удаляем слово слева от курсора
+    var newBeforeText = beforeText.replace(/[\wа-яА-Я]+(\s*)?$/, '');
+    
+    // Удаляем слово справа от курсора, если курсор не внутри или в конце слова
+    var newAfterText = afterText.replace(/^(\s*)?[\wа-яА-Я]+/, '');
+
+    textarea.value = newBeforeText + newAfterText;
+    // Устанавливаем позицию курсора на конец оставшегося текста слева
+    textarea.selectionStart = textarea.selectionEnd = newBeforeText.length;
+
+    saveText();
+}
+
 
         function copyText() {
             var speechInputField = document.getElementById('speechInputField');
@@ -136,21 +150,22 @@
         }
 
         function deleteBlock() {
-            var textarea = document.getElementById('speechInputField');
-            var text = textarea.value;
-            var cursorPos = textarea.selectionStart;
-            var beforeText = text.substring(0, cursorPos);
-            var afterText = text.substring(cursorPos);
-            var startBlockPos = beforeText.lastIndexOf("\n\n") + 2;
-            if (startBlockPos < 2) startBlockPos = 0;
-            var endBlockPos = afterText.indexOf("\n\n");
-            if (endBlockPos === -1) endBlockPos = afterText.length;
-            else endBlockPos += cursorPos + 2;
+    var textarea = document.getElementById('speechInputField');
+    var text = textarea.value;
+    var cursorPos = textarea.selectionStart;
+    var beforeText = text.substring(0, cursorPos);
+    var afterText = text.substring(cursorPos);
+    var startBlockPos = beforeText.lastIndexOf("\n\n") + 2; // Начало блока
+    if (startBlockPos < 2) startBlockPos = 0; // Учитываем начало текста
+    var endBlockPos = afterText.indexOf("\n\n"); // Конец блока
+    if (endBlockPos === -1) endBlockPos = afterText.length; // Если это последний блок
+    else endBlockPos += cursorPos + 2; // Позиция конца блока
 
-            textarea.value = text.substring(0, startBlockPos) + text.substring(endBlockPos);
-            textarea.selectionStart = textarea.selectionEnd = startBlockPos;
-            saveText();
-        }
+    // Обновляем текст, оставляя одну пустую строку между блоками, если это не начало и не конец текста
+    textarea.value = text.substring(0, startBlockPos) + (startBlockPos > 0 ? "\n\n" : "") + text.substring(endBlockPos);
+    textarea.selectionStart = textarea.selectionEnd = startBlockPos + (startBlockPos > 0 ? 1 : 0); // Устанавливаем курсор после пустой строки, если это не начало текста
+    saveText();
+}
 
         window.onload = function() {
             var savedText = localStorage.getItem('savedText');
