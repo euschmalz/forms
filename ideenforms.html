@@ -60,28 +60,27 @@ function deleteWord() {
     var beforeText = text.substring(0, startPos);
     var afterText = text.substring(endPos);
 
-    if (startPos === endPos) { // Если нет выделения текста
-        // Изменяем регулярное выражение для удаления слов, оставляя знаки препинания
-        var newBeforeText = beforeText.replace(/[\wа-яА-Я]+(\s*)?$/, '');
-        var newAfterText = afterText.replace(/^(\s*)?[\wа-яА-Я]+/, '');
+    // Если нет выделения текста
+    if (startPos === endPos) {
+        // Удаляем слово или пробелы непосредственно перед курсором, сохраняя знаки препинания
+        var newBeforeText = beforeText.replace(/[\wа-яА-Я]+(\s*)?$|(\s+)$/, '');
+        
+        // Удаляем слово или пробелы непосредственно после курсора, сохраняя знаки препинания
+        var newAfterText = afterText.replace(/^(\s*)?[\wа-яА-Я]+|^(?=\s)/, '');
 
-        // Соединяем текст, добавляя пробел между частями, если и до, и после курсора есть текст
-        var finalText = newBeforeText + (newBeforeText && newAfterText ? " " : "") + newAfterText;
-
-        // Обновляем текст
-        textarea.value = finalText;
+        textarea.value = newBeforeText + newAfterText;
 
         // Корректируем позицию курсора
-        var newPos = newBeforeText.length + (newBeforeText && newAfterText ? 1 : 0);
-        textarea.selectionStart = textarea.selectionEnd = newPos;
-    } else { // Если текст выделен
-        // Удаляем выделенный текст, оставляя один пробел
-        textarea.value = beforeText + " " + afterText;
-        textarea.selectionStart = textarea.selectionEnd = startPos + 1;
+        textarea.selectionStart = textarea.selectionEnd = newBeforeText.length;
+    } else {
+        // Если текст выделен, удаляем выделенный текст
+        textarea.value = beforeText + afterText;
+        textarea.selectionStart = textarea.selectionEnd = startPos;
     }
 
     saveText();
 }
+
 
 
         function copyText() {
