@@ -57,12 +57,12 @@
             <input type="range" id="fontSizeRange" min="8" max="48" value="16">
         </div>
         <div class="buttons-container">
-            <button id="clearButton" onclick="clearTextInput();">Очистить</button>
-            <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
-            <button id="deleteBlockButton" onclick="deleteBlock();">Удалить блок</button>
-            <button id="copyTextButton" onclick="copyText();">Скопировать всё</button>
             <button onclick="startSpeechRecognition();">Голос в текст</button>
             <button id="saveButton" onclick="clearText();">Сохранить</button>
+            <button id="clearButton" onclick="clearTextInput();">Очистить</button>
+            <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
+            <button id="copyTextButton" onclick="copyText();">Скопировать всё</button>
+            <button id="deleteBlockButton" onclick="deleteBlock();">Удалить блок</button>
         </div>
     </div>
 
@@ -108,7 +108,21 @@
             document.getElementById('speechInputField').style.fontSize = this.value + 'px';
         });
 
-        // Оставьте остальные функции без изменений
+        function deleteWord() {
+            // Ваша реализация функции удаления слова
+        }
+
+        function copyText() {
+            var speechInputField = document.getElementById('speechInputField');
+            speechInputField.select();
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            alert('Текст скопирован');
+        }
+
+        function deleteBlock() {
+            // Ваша реализация функции удаления блока
+        }
 
         window.onload = function() {
             var savedText = localStorage.getItem('savedText');
