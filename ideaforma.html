@@ -35,8 +35,8 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         font-size: 14px;
-        resize: none; /* Отключаем ручное растягивание */
-        overflow: hidden; /* Предотвращаем появление полосы прокрутки */
+        overflow: hidden; /* Скрываем полосу прокрутки */
+        resize: vertical; /* Возвращаем возможность ручного изменения размера */
     }
     .button-row {
         display: flex;
@@ -46,7 +46,7 @@
         margin-top: 10px;
     }
     .form-container button {
-        flex: 1 0 calc(50% - 10px); /* Рассчитываем ширину для 2 кнопок в ряд с учетом зазора */
+        flex: 1 0 calc(50% - 10px);
         padding: 10px;
         background-color: #4CAF50;
         color: white;
@@ -61,6 +61,34 @@
         margin-bottom: 10px;
         font-weight: bold;
     }
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 15px;
+        border-radius: 5px;   
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+        margin: 20px 0;
+    }
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%; 
+        background: #4CAF50;
+        cursor: pointer;
+    }
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #4CAF50;
+        cursor: pointer;
+    }
 </style>
 </head>
 <body>
@@ -68,6 +96,7 @@
     <form id="ideaForm">
         <div class="form-title">+ Добавить идею</div>
         <textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
+        <input type="range" min="14" max="30" value="14" class="slider" id="fontSizeSlider">
         <div class="button-row">
             <button type="button">Голос в текст</button>
             <button type="button">Скопировать всё</button>
@@ -80,12 +109,22 @@
 </div>
 <script>
     const textarea = document.getElementById('ideaDescription');
-    textarea.addEventListener('input', autoResize, false);
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+
+    fontSizeSlider.addEventListener('input', function() {
+        textarea.style.fontSize = this.value + 'px';
+        autoResize();
+    });
+
+    textarea.addEventListener('input', autoResize);
 
     function autoResize() {
-        this.style.height = 'auto';
-        this.style.height = this.scrollHeight + 'px';
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
     }
+
+    // Первоначальное автовыравнивание размера текстового поля
+    window.onload = autoResize;
 </script>
 </body>
 </html>
