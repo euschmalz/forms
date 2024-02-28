@@ -25,10 +25,6 @@
         max-width: 800px;
         width: 100%;
     }
-    .banner-image {
-        width: 100%;
-        border-radius: 8px 8px 0 0;
-    }
     .form-container form {
         display: flex;
         flex-direction: column;
@@ -39,16 +35,17 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         font-size: 14px;
-        resize: vertical; /* Убедиться, что текстовое поле может растягиваться */
+        resize: vertical;
     }
     .button-row {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
         margin-top: 10px;
+        justify-content: space-between;
     }
     .form-container button {
-        flex: 1 1 auto;
+        flex: 1 0 calc(50% - 10px); /* Рассчитываем ширину для 2 кнопок в ряд с учетом зазора */
         padding: 10px;
         background-color: #4CAF50;
         color: white;
@@ -61,14 +58,14 @@
     }
     @media (max-width: 600px) {
         .form-container button {
-            flex-basis: 100%;
+            flex-basis: calc(50% - 10px); /* Адаптация для мобильных устройств */
         }
     }
 </style>
 </head>
 <body>
 <div class="form-container">
-    <img src="URL-до-вашего-баннера" alt="Баннер" class="banner-image">
+ 
     <form id="ideaForm">
         <textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
         <div class="button-row">
@@ -81,8 +78,5 @@
         </div>
     </form>
 </div>
-<script>
-// JavaScript для взаимодействия с Google Sheets и валидации формы здесь.
-</script>
 </body>
 </html>
