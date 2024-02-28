@@ -102,7 +102,7 @@ cursor: pointer;
 <button type="button">Скопировать всё</button>
 <button type="button" id="clearButton">Очистить</button>
 <button type="button">Удалить блок</button>
-<button type="button">Удалить слово</button>
+<button type="button" id="deleteWordButton">Удалить слово</button>
 <button type="submit">Отправить</button>
 </div>
 </form>
@@ -150,6 +150,33 @@ textarea.value = savedText;
 autoResize();
 }
 });
+
+
+function deleteWord() {
+    var textarea = document.getElementById('ideaDescription');
+    var text = textarea.value;
+    var cursorPos = textarea.selectionStart;
+    var beforeCursor = text.substring(0, cursorPos);
+    var afterCursor = text.substring(cursorPos);
+
+    // Удаление слова перед курсором: ищем пробел или начало строки слева от курсора
+    var beforeText = beforeCursor.replace(/[\wа-яА-ЯёЁ]+(\s*)?$/, '');
+
+    // Удаление слова после курсора: ищем пробел или конец строки справа от курсора
+    var afterText = afterCursor.replace(/^(\s*)?[\wа-яА-ЯёЁ]+/, '');
+
+    // Объединяем обновленные части текста и обновляем значение и позицию курсора в textarea
+    textarea.value = beforeText + afterText;
+    var newCursorPos = beforeText.length;
+    textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+
+    // Сохраняем изменения в localStorage
+    localStorage.setItem('savedText', textarea.value);
+}
+
+document.getElementById('deleteWordButton').addEventListener('click', deleteWord);
+
+
 </script>
 </body>
 </html>
