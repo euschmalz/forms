@@ -161,46 +161,32 @@ function deleteWord() {
     var textarea = document.getElementById('ideaDescription');
     var text = textarea.value;
     var cursorPos = textarea.selectionStart;
-    
-    // Если курсор в начале поля, не делаем ничего
-    if (cursorPos === 0) return;
 
-    var beforeCursor = text.substring(0, cursorPos);
-    var afterCursor = text.substring(cursorPos);
+    // Находим индексы начала и конца слова относительно позиции курсора
+    var leftSide = text.substring(0, cursorPos);
+    var rightSide = text.substring(cursorPos, text.length);
 
-    // Находим границы слова перед курсором
-    var start = beforeCursor.search(/\S+$/);
-    // Если непосредственно перед курсором пробел, удаляем один символ
-    if (start === -1) {
-        start = beforeCursor.length - 1;
-    }
+    // Удаляем все символы до ближайшего пробела слева или начала строки
+    var leftWordBoundary = leftSide.search(/\s?\b[\wа-яА-ЯёЁ]*$/);
+    // Удаляем все символы после курсора до ближайшего пробела справа или конца строки
+    var rightWordBoundary = rightSide.search(/\b[\wа-яА-ЯёЁ]*\s?/);
 
-    // Находим начало слова после курсора, если курсор стоит на пробеле
-    var end = afterCursor.search(/\S/);
-    if (end === -1) {
-        afterCursor = '';
-    } else {
-        afterCursor = afterCursor.substring(end + 1);
-    }
-
-    beforeCursor = beforeCursor.substring(0, start);
-
-    // Обеспечиваем, что между словами остается только один пробел
-    var spaceBetween = beforeCursor.length > 0 && afterCursor.length > 0 ? ' ' : '';
+    // Обновляем части строки до и после курсора
+    leftSide = leftSide.substring(0, leftWordBoundary);
+    rightSide = rightSide.substring(rightWordBoundary + 1);
 
     // Объединяем обновленные части текста
-    textarea.value = beforeCursor + spaceBetween + afterCursor;
+    textarea.value = leftSide + (leftSide && rightSide ? ' ' : '') + rightSide;
 
     // Устанавливаем позицию курсора
-    textarea.selectionStart = textarea.selectionEnd = beforeCursor.length + spaceBetween.length;
+    var newPos = leftSide.length + (leftSide && rightSide ? 1 : 0);
+    textarea.selectionStart = textarea.selectionEnd = newPos;
 
     // Сохраняем изменения
     localStorage.setItem('savedText', textarea.value);
 }
 
 document.getElementById('deleteWordButton').addEventListener('click', deleteWord);
-
-
 
 
 
