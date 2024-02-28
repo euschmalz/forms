@@ -164,15 +164,18 @@ function deleteWord() {
     var beforeCursor = text.substring(0, cursorPos);
     var afterCursor = text.substring(cursorPos);
 
-    // Удаление слова перед курсором: ищем пробел или начало строки слева от курсора
-    var beforeText = beforeCursor.replace(/[\wа-яА-ЯёЁ]+(\s*)?$/, '');
+    // Удаление слова перед курсором и лишних пробелов
+    var beforeText = beforeCursor.replace(/[\wа-яА-ЯёЁ]*\s*$/, '');
 
-    // Удаление слова после курсора: ищем пробел или конец строки справа от курсора
-    var afterText = afterCursor.replace(/^(\s*)?[\wа-яА-ЯёЁ]+/, '');
+    // Удаление слова после курсора и лишних пробелов
+    var afterText = afterCursor.replace(/^\s*[\wа-яА-ЯёЁ]*/, '');
 
+    // Обеспечиваем, что между словами остается только один пробел
+    var spaceBetween = beforeText.length > 0 && afterText.length > 0 ? ' ' : '';
+    
     // Объединяем обновленные части текста и обновляем значение и позицию курсора в textarea
-    textarea.value = beforeText + afterText;
-    var newCursorPos = beforeText.length;
+    textarea.value = beforeText + spaceBetween + afterText;
+    var newCursorPos = beforeText.length + spaceBetween.length;
     textarea.selectionStart = textarea.selectionEnd = newCursorPos;
 
     // Сохраняем изменения в localStorage
@@ -180,6 +183,7 @@ function deleteWord() {
 }
 
 document.getElementById('deleteWordButton').addEventListener('click', deleteWord);
+
 
 
 
