@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Голос в текст с редактированием и сохранением</title>
+    <link rel="icon" href="https://euschmalz.github.io/forms/favicon_ideja.ico">
+    <style>
+        /* Ваши стили останутся без изменений */
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <!-- Ваши элементы интерфейса останутся без изменений -->
+    </div>
+
+    <!-- Добавляем скрытую форму для отправки данных -->
+    <form id="ideaForm" style="display:none;">
+        <input type="text" name="ideaDescription" id="ideaFormIdeaDescription" />
+        <!-- Добавьте другие поля формы здесь, если необходимо -->
+    </form>
+
+    <script>
+         var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+var recognition = new SpeechRecognition();
+recognition.continuous = true;
+recognition.lang = 'ru-RU';
+recognition.interimResults = false;
+
+recognition.onresult = function(event) {
+    var transcript = event.results[event.resultIndex][0].transcript;
+    var speechInputField = document.getElementById('speechInputField');
+    speechInputField.value += transcript + ' ';
+    saveText();
+    formatText(); // Форматирование текста после распознавания
+};
+
+recognition.onerror = function(event) {
+    console.error('Ошибка распознавания речи: ', event.error);
+};
+
+function startSpeechRecognition() {
+    recognition.start();
+}
+
+function saveText() {
+    var speechInputField = document.getElementById('speechInputField');
+    localStorage.setItem('savedText', speechInputField.value);
+}
+
+// Остальные функции остаются без изменений
+
+function submitIdea() {
+    var textInput = document.getElementById('speechInputField').value;
+    document.getElementById('ideaFormIdeaDescription').value = textInput;
+
+    var formData = new FormData(document.getElementById('ideaForm'));
+
+    fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(text => {
+        alert(text);
+        document.getElementById('ideaForm').reset(); // Сброс формы после отправки
+    })
+    .catch(error => console.error('Ошибка:', error));
+}
+
+// Убедитесь, что все остальные функции JavaScript остались без изменений
+     
+    </script>
+</body>
+</html>
