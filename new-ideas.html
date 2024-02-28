@@ -17,7 +17,19 @@
 </head>
 <body>
     <div class="form-container">
-        <!-- Ваши элементы интерфейса останутся без изменений -->
+         <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
+        <div class="controls-container">
+            <div class="text-size-slider">
+                <label for="fontSizeRange">Размер текста:</label>
+                <input type="range" id="fontSizeRange" min="8" max="48" value="18">
+            </div>
+            <div class="buttons-container">
+                <button onclick="startSpeechRecognition();">Голос в текст</button>
+                <button id="copyTextButton" onclick="copyText();">Скопировать всё</button>
+                <button id="clearButton" onclick="clearTextInput();">Очистить</button>
+                <button id="deleteBlockButton" onclick="deleteBlock();">Удалить блок</button>
+                <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
+                <button id="saveButton" onclick="submitIdea();">Отправить</button>
     </div>
 
     <!-- Добавляем скрытую форму для отправки данных -->
