@@ -161,26 +161,23 @@ function deleteWord() {
     var textarea = document.getElementById('ideaDescription');
     var text = textarea.value;
     var cursorPos = textarea.selectionStart;
+    var beforeCursor = text.substring(0, cursorPos).trimEnd();
+    var afterCursor = text.substring(cursorPos).trimStart();
 
-    // Находим индексы начала и конца слова относительно позиции курсора
-    var leftSide = text.substring(0, cursorPos);
-    var rightSide = text.substring(cursorPos, text.length);
+    // Находим последний пробел перед курсором или начало строки
+    var start = beforeCursor.lastIndexOf(" ");
+    start = start === -1 ? 0 : start;
 
-    // Удаляем все символы до ближайшего пробела слева или начала строки
-    var leftWordBoundary = leftSide.search(/\s?\b[\wа-яА-ЯёЁ]*$/);
-    // Удаляем все символы после курсора до ближайшего пробела справа или конца строки
-    var rightWordBoundary = rightSide.search(/\b[\wа-яА-ЯёЁ]*\s?/);
+    // Находим первый пробел после курсора или конец строки
+    var end = afterCursor.indexOf(" ");
+    end = end === -1 ? afterCursor.length : end + cursorPos;
 
-    // Обновляем части строки до и после курсора
-    leftSide = leftSide.substring(0, leftWordBoundary);
-    rightSide = rightSide.substring(rightWordBoundary + 1);
+    // Удаляем слово и лишние пробелы, оставляя только один между словами
+    var space = start > 0 && end < text.length ? " " : "";
+    textarea.value = text.substring(0, start) + space + text.substring(end);
 
-    // Объединяем обновленные части текста
-    textarea.value = leftSide + (leftSide && rightSide ? ' ' : '') + rightSide;
-
-    // Устанавливаем позицию курсора
-    var newPos = leftSide.length + (leftSide && rightSide ? 1 : 0);
-    textarea.selectionStart = textarea.selectionEnd = newPos;
+    // Обновляем позицию курсора
+    textarea.selectionStart = textarea.selectionEnd = start + space.length;
 
     // Сохраняем изменения
     localStorage.setItem('savedText', textarea.value);
