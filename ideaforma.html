@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Сбор Идей</title>
-<style>
-body {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сбор Идей</title>
+    <style>
+        body {
 font-family: 'Arial', sans-serif;
 margin: 0;
 padding: 0;
@@ -89,67 +89,72 @@ border-radius: 50%;
 background: #4CAF50;
 cursor: pointer;
 }
-</style>
+    </style>
 </head>
 <body>
 <div class="form-container">
-<form id="ideaForm">
-<div class="form-title">+ Добавить идею</div>
-<textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
-<input type="range" min="14" max="30" value="14" class="slider" id="fontSizeSlider">
-<div class="button-row">
-<button type="button">Голос в текст</button>
-<button type="button">Скопировать всё</button>
-<button type="button" id="clearButton">Очистить</button>
-<button type="button">Удалить блок</button>
-<button type="button" id="deleteWordButton">Удалить слово</button>
-<button type="submit">Отправить</button>
-</div>
-</form>
+    <form id="ideaForm">
+        <div class="form-title">+ Добавить идею</div>
+        <textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
+        <input type="range" min="14" max="30" value="14" class="slider" id="fontSizeSlider">
+        <div class="button-row">
+            <button type="button">Голос в текст</button>         
+            <button type="button">Скопировать всё</button>
+            <button type="button" id="clearButton">Очистить</button>
+            <button type="button">Удалить блок</button>
+            <button type="button" id="deleteWordButton">Удалить слово</button>
+            <button type="submit">Отправить</button>
+        </div>
+    </form>
 </div>
 <script>
-const textarea = document.getElementById('ideaDescription');
-const fontSizeSlider = document.getElementById('fontSizeSlider');
-const form = document.getElementById('ideaForm');
-const clearButton = document.getElementById('clearButton'); // Получаем кнопку "Очистить"
+    const textarea = document.getElementById('ideaDescription');
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const form = document.getElementById('ideaForm');
 
-fontSizeSlider.addEventListener('input', function() {
-textarea.style.fontSize = this.value + 'px';
-autoResize();
-});
+    fontSizeSlider.addEventListener('input', function() {
+        textarea.style.fontSize = this.value + 'px';
+        autoResize();
+    });
 
-textarea.addEventListener('input', function() {
-localStorage.setItem('savedText', textarea.value);
-autoResize();
-});
+    textarea.addEventListener('input', function() {
+        formatText(); // Автоматическое форматирование текста
+    });
 
-form.addEventListener('submit', function(event) {
-event.preventDefault(); // Предотвращаем отправку формы для демонстрации
-localStorage.removeItem('savedText'); // Удаляем сохраненный текст
-textarea.value = ''; // Очищаем текстовое поле
-autoResize(); // Возвращаем исходный размер поля
-});
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Предотвращаем отправку формы для демонстрации
+        localStorage.removeItem('savedText');
+        textarea.value = '';
+        autoResize();
+    });
 
-// Добавляем обработчик для кнопки "Очистить"
-clearButton.addEventListener('click', function() {
-textarea.value = ''; // Очищаем текстовое поле
-localStorage.removeItem('savedText'); // Удаляем текст из localStorage
-autoResize(); // Автоматически корректируем размер поля
-});
+    document.getElementById('clearButton').addEventListener('click', function() {
+        textarea.value = '';
+        localStorage.removeItem('savedText');
+        autoResize();
+    });
 
-function autoResize() {
-textarea.style.height = 'auto';
-textarea.style.height = textarea.scrollHeight + 'px';
-}
+    function autoResize() {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
 
-// Загрузка сохраненного текста при инициализации
-document.addEventListener('DOMContentLoaded', function() {
-const savedText = localStorage.getItem('savedText');
-if (savedText) {
-textarea.value = savedText;
-autoResize();
-}
-});
+    function formatText() {
+        var text = textarea.value;
+        // Оставляем только одну пустую строку между блоками текста
+        var formattedText = text.replace(/\n{3,}/g, '\n\n');
+        textarea.value = formattedText;
+        localStorage.setItem('savedText', formattedText); // Сохраняем отформатированный текст
+    }
+
+    // Загрузка сохраненного текста при инициализации
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedText = localStorage.getItem('savedText');
+        if (savedText) {
+            textarea.value = savedText;
+            autoResize();
+        }
+    });
 
 
 function deleteWord() {
@@ -175,6 +180,7 @@ function deleteWord() {
 }
 
 document.getElementById('deleteWordButton').addEventListener('click', deleteWord);
+
 
 
 </script>
