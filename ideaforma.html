@@ -15,6 +15,7 @@
         display: flex;
         justify-content: center;
         align-items: flex-start;
+        padding-top: 20px;
     }
     .form-container {
         background-color: rgba(255, 255, 255, 0.8);
@@ -23,19 +24,10 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         max-width: 800px;
         width: 100%;
-        margin-top: 20px;
     }
     .banner-image {
         width: 100%;
-        border-radius: 8px 8px 0 0; /* Закругление только верхних углов */
-    }
-    .form-header {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-    }
-    .form-header h2 {
-        margin: 0;
+        border-radius: 8px 8px 0 0;
     }
     .form-container form {
         display: flex;
@@ -44,49 +36,47 @@
     .form-container textarea {
         margin-top: 10px;
         padding: 10px;
-        resize: vertical;
-        height: 100px;
         border: 1px solid #ccc;
         border-radius: 4px;
         font-size: 14px;
+        resize: vertical; /* Убедиться, что текстовое поле может растягиваться */
     }
-    .button-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    .button-row {
+        display: flex;
+        flex-wrap: wrap;
         gap: 10px;
         margin-top: 10px;
     }
-    .form-container button, .form-container .action-button {
+    .form-container button {
+        flex: 1 1 auto;
         padding: 10px;
+        background-color: #4CAF50;
+        color: white;
         border: none;
         border-radius: 4px;
         cursor: pointer;
-        flex: 1; /* Buttons will grow and shrink equally */
     }
-    .form-container .action-button {
-        background-color: #77d979; /* Different color for action buttons */
+    .form-container button:hover {
+        background-color: #45a049;
     }
-    .form-container button:hover, .form-container .action-button:hover {
-        opacity: 0.9; /* Slight change on hover */
+    @media (max-width: 600px) {
+        .form-container button {
+            flex-basis: 100%;
+        }
     }
 </style>
 </head>
 <body>
 <div class="form-container">
-    <img src="" alt="Баннер" class="banner-image">
-    <div class="form-header">
-        <h2>+ Новая идея</h2>
-    </div>
+    <img src="URL-до-вашего-баннера" alt="Баннер" class="banner-image">
     <form id="ideaForm">
         <textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
-        <div class="button-container">
-            <button type="button" class="action-button">Голос в текст</button>
-            <button type="button" class="action-button">Скопировать всё</button>
-            <button type="button" class="action-button">Очистить</button>
-        </div>
-        <div class="button-container">
-            <button type="button" class="action-button">Удалить блок</button>
-            <button type="button" class="action-button">Удалить слово</button>
+        <div class="button-row">
+            <button type="button">Голос в текст</button>
+            <button type="button">Скопировать всё</button>
+            <button type="button">Очистить</button>
+            <button type="button">Удалить блок</button>
+            <button type="button">Удалить слово</button>
             <button type="submit">Отправить</button>
         </div>
     </form>
