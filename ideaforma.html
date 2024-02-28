@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сбор Идей</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: url('URL-до-вашего-фона');
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        width: 100%;
+        margin-top: 20px;
+    }
+    .banner-image {
+        width: 100%;
+        border-radius: 8px 8px 0 0; /* Закругление только верхних углов */
+    }
+    .form-header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    .form-header h2 {
+        margin: 0;
+    }
+    .form-container form {
+        display: flex;
+        flex-direction: column;
+    }
+    .form-container textarea {
+        margin-top: 10px;
+        padding: 10px;
+        resize: vertical;
+        height: 100px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .button-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .form-container button, .form-container .action-button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        flex: 1; /* Buttons will grow and shrink equally */
+    }
+    .form-container .action-button {
+        background-color: #f0ad4e; /* Different color for action buttons */
+    }
+    .form-container button:hover, .form-container .action-button:hover {
+        opacity: 0.9; /* Slight change on hover */
+    }
+</style>
+</head>
+<body>
+<div class="form-container">
+    <img src="https://files.jotform.com/jufs/euschmalz/form_files/DALL%C2%B7E-2024-02-11-22.20.65c93c5acb2971.72405088.png?md5=qodKi6W9MzLoohFhDlcaDA&expires=1709134791" alt="Баннер" class="banner-image">
+    <div class="form-header">
+        <h2>+ Новая идея</h2>
+    </div>
+    <form id="ideaForm">
+        <textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
+        <div class="button-container">
+            <button type="button" class="action-button">Голос в текст</button>
+            <button type="button" class="action-button">Скопировать всё</button>
+            <button type="button" class="action-button">Очистить</button>
+        </div>
+        <div class="button-container">
+            <button type="button" class="action-button">Удалить блок</button>
+            <button type="button" class="action-button">Удалить слово</button>
+            <button type="submit">Отправить</button>
+        </div>
+    </form>
+</div>
+<script>
+// JavaScript для взаимодействия с Google Sheets и валидации формы здесь.
+</script>
+</body>
+</html>
