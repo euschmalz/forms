@@ -161,29 +161,43 @@ function deleteWord() {
     var textarea = document.getElementById('ideaDescription');
     var text = textarea.value;
     var cursorPos = textarea.selectionStart;
+    
+    // Если курсор в начале поля, не делаем ничего
+    if (cursorPos === 0) return;
 
-    // Находим начало и конец слова относительно позиции курсора
-    var start = text.lastIndexOf(' ', cursorPos - 1) + 1;
-    var end = text.indexOf(' ', cursorPos);
-    end = end === -1 ? text.length : end;
+    var beforeCursor = text.substring(0, cursorPos);
+    var afterCursor = text.substring(cursorPos);
 
-    // Собираем текст до, после и проверяем на наличие пробела после удаляемого блока
-    var beforeText = text.substring(0, start);
-    var afterText = text.substring(end);
-    var needSpace = beforeText.length > 0 && afterText.length > 0;
+    // Находим границы слова перед курсором
+    var start = beforeCursor.search(/\S+$/);
+    // Если непосредственно перед курсором пробел, удаляем один символ
+    if (start === -1) {
+        start = beforeCursor.length - 1;
+    }
 
-    // Объединяем текст с учетом необходимости пробела
-    textarea.value = beforeText + (needSpace ? ' ' : '') + afterText;
+    // Находим начало слова после курсора, если курсор стоит на пробеле
+    var end = afterCursor.search(/\S/);
+    if (end === -1) {
+        afterCursor = '';
+    } else {
+        afterCursor = afterCursor.substring(end + 1);
+    }
+
+    beforeCursor = beforeCursor.substring(0, start);
+
+    // Обеспечиваем, что между словами остается только один пробел
+    var spaceBetween = beforeCursor.length > 0 && afterCursor.length > 0 ? ' ' : '';
+
+    // Объединяем обновленные части текста
+    textarea.value = beforeCursor + spaceBetween + afterCursor;
 
     // Устанавливаем позицию курсора
-    var newPos = beforeText.length + (needSpace ? 1 : 0);
-    textarea.selectionStart = textarea.selectionEnd = newPos;
+    textarea.selectionStart = textarea.selectionEnd = beforeCursor.length + spaceBetween.length;
 
     // Сохраняем изменения
     localStorage.setItem('savedText', textarea.value);
 }
 
-// Предполагая, что у вас уже есть элемент с ID 'deleteWordButton' в вашем HTML
 document.getElementById('deleteWordButton').addEventListener('click', deleteWord);
 
 
