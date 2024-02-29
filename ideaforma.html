@@ -1,215 +1,130 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сбор Идей</title>
-    <style>
-      body {
-font-family: 'Arial', sans-serif;
-margin: 0;
-padding: 0;
-background-image: url('URL-до-вашего-фона');
-background-size: cover;
-background-repeat: no-repeat;
-display: flex;
-justify-content: center;
-align-items: flex-start;
-padding-top: 20px;
-}
-.form-container {
-background-color: rgba(255, 255, 255, 0.8);
-padding: 20px;
-border-radius: 8px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-max-width: 800px;
-width: 100%;
-}
-.form-container form {
-display: flex;
-flex-direction: column;
-}
-.form-container textarea {
-margin-top: 10px;
-padding: 10px;
-border: 1px solid #ccc;
-border-radius: 4px;
-font-size: 14px;
-overflow: hidden; /* Скрываем полосу прокрутки */
-resize: vertical; /* Возвращаем возможность ручного изменения размера */
-}
-.button-row {
-display: flex;
-flex-wrap: wrap;
-gap: 10px;
-justify-content: space-between;
-margin-top: 10px;
-}
-.form-container button {
-flex: 1 0 calc(50% - 10px);
-padding: 10px;
-background-color: #4CAF50;
-color: white;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-}
-.form-container button:hover {
-background-color: #45a049;
-}
-.form-title {
-margin-bottom: 10px;
-font-weight: bold;
-}
-.slider {
--webkit-appearance: none;
-width: 100%;
-height: 15px;
-border-radius: 5px;
-background: #d3d3d3;
-outline: none;
-opacity: 0.7;
--webkit-transition: .2s;
-transition: opacity .2s;
-margin: 20px 0;
-}
-.slider::-webkit-slider-thumb {
--webkit-appearance: none;
-appearance: none;
-width: 25px;
-height: 25px;
-border-radius: 50%;
-background: #4CAF50;
-cursor: pointer;
-}
-.slider::-moz-range-thumb {
-width: 25px;
-height: 25px;
-border-radius: 50%;
-background: #4CAF50;
-cursor: pointer;
-}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сбор Идей</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: url('URL-до-вашего-фона');
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 20px;
+    }
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        width: 100%;
+    }
+    .form-container form {
+        display: flex;
+        flex-direction: column;
+    }
+    .form-container textarea {
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        overflow: hidden; /* Скрываем полосу прокрутки */
+        resize: vertical; /* Возвращаем возможность ручного изменения размера */
+    }
+    .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    .form-container button {
+        flex: 1 0 calc(50% - 10px);
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .form-container button:hover {
+        background-color: #45a049;
+    }
+    .form-title {
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 15px;
+        border-radius: 5px;   
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+        margin: 20px 0;
+    }
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%; 
+        background: #4CAF50;
+        cursor: pointer;
+    }
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #4CAF50;
+        cursor: pointer;
+    }
+</style>
 </head>
 <body>
-    <div class="form-container">
-        <textarea id="speechInputField" rows="10" cols="50" oninput="saveText()"></textarea>
-        <div class="controls-container">
-            <div class="text-size-slider">
-                <label for="fontSizeRange">Размер текста:</label>
-                <input type="range" id="fontSizeRange" min="8" max="48" value="18">
-            </div>
-            <div class="buttons-container">
-                <button onclick="startSpeechRecognition();">Голос в текст</button>
-                <button id="copyTextButton" onclick="copyText();">Скопировать всё</button>
-                <button id="clearButton" onclick="clearTextInput();">Очистить</button>
-                <button id="deleteBlockButton" onclick="deleteBlock();">Удалить блок</button>
-                <button id="deleteWordButton" onclick="deleteWord();">Удалить слово</button>
-                <button id="saveButton" onclick="submitIdea();">Отправить</button>
-            </div>
+<div class="form-container">
+    <form id="ideaForm">
+        <div class="form-title">+ Добавить идею</div>
+        <textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
+        <input type="range" min="14" max="30" value="14" class="slider" id="fontSizeSlider">
+        <div class="button-row">
+            <button type="button">Голос в текст</button>
+            <button type="button">Скопировать всё</button>
+            <button type="button">Очистить</button>
+            <button type="button">Удалить блок</button>
+            <button type="button">Удалить слово</button>
+            <button type="submit">Отправить</button>
         </div>
-    </div>
+    </form>
+</div>
+<script>
+    const textarea = document.getElementById('ideaDescription');
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
 
-    <script>
+    fontSizeSlider.addEventListener('input', function() {
+        textarea.style.fontSize = this.value + 'px';
+        autoResize();
+    });
 
+    textarea.addEventListener('input', autoResize);
 
+    function autoResize() {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
 
-         var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
-        var recognition = new SpeechRecognition();
-        recognition.continuous = true;
-        recognition.lang = 'ru-RU';
-        recognition.interimResults = false;
-
-        recognition.onresult = function(event) {
-            var transcript = event.results[event.resultIndex][0].transcript;
-            var speechInputField = document.getElementById('speechInputField');
-            speechInputField.value += transcript + ' ';
-            saveText();
-            formatText(); // Форматирование текста после распознавания
-        };
-
-        recognition.onerror = function(event) {
-            console.error('Ошибка распознавания речи: ', event.error);
-        };
-
-        function startSpeechRecognition() {
-            recognition.start();
-        }
-
-        function saveText() {
-            var speechInputField = document.getElementById('speechInputField');
-            localStorage.setItem('savedText', speechInputField.value);
-        }
-
-        function clearText() {
-            document.getElementById('speechInputField').value = '';
-            localStorage.removeItem('savedText');
-        }
-
-        function clearTextInput() {
-            var speechInputField = document.getElementById('speechInputField');
-            speechInputField.value = '';
-            saveText();
-        }
-
-        document.getElementById('fontSizeRange').addEventListener('input', function() {
-            document.getElementById('speechInputField').style.fontSize = this.value + 'px';
-        });
-
-        function formatText() {
-            var textarea = document.getElementById('speechInputField');
-            var text = textarea.value;
-            // Оставляем только одну пустую строку между блоками текста
-            var formattedText = text.replace(/\n{3,}/g, '\n\n');
-            textarea.value = formattedText;
-            saveText();
-        }
-
-        document.getElementById('speechInputField').addEventListener('input', formatText);
-
-        function deleteWord() {
-            var textarea = document.getElementById('speechInputField');
-            var text = textarea.value;
-            var cursorPos = textarea.selectionStart;
-            var beforeText = text.substring(0, cursorPos).replace(/[\wа-яА-Я]+(\s*)?$/, '');
-            var afterText = text.substring(cursorPos).replace(/^(\s*)?[\wа-яА-Я]+/, '');
-            textarea.value = beforeText + afterText;
-            textarea.selectionStart = textarea.selectionEnd = beforeText.length;
-            saveText();
-        }
-
-        function copyText() {
-            var speechInputField = document.getElementById('speechInputField');
-            speechInputField.select();
-            document.execCommand('copy');
-            window.getSelection().removeAllRanges();
-            alert('Текст скопирован');
-        }
-
-        function deleteBlock() {
-            var textarea = document.getElementById('speechInputField');
-            var text = textarea.value;
-            var cursorPos = textarea.selectionStart;
-            var start = text.lastIndexOf('\n\n', cursorPos) + 2;
-            var end = text.indexOf('\n\n', cursorPos);
-            if (end === -1) end = text.length;
-            textarea.value = text.substring(0, start) + text.substring(end);
-            textarea.selectionStart = textarea.selectionEnd = start;
-            saveText();
-        }
-
-        window.onload = function() {
-            var savedText = localStorage.getItem('savedText');
-            if (savedText) {
-                document.getElementById('speechInputField').value = savedText;
-                formatText(); // Форматируем текст при загрузке
-            }
-            var fontSizeRange = document.getElementById('fontSizeRange');
-            if(fontSizeRange) {
-                document.getElementById('speechInputField').style.fontSize = fontSizeRange.value + 'px';
-            }
-
-
-    </script>
+    // Первоначальное автовыравнивание размера текстового поля
+    window.onload = autoResize;
+</script>
 </body>
 </html>
