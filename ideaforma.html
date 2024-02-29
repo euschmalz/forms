@@ -183,6 +183,57 @@ localStorage.setItem('savedText', textarea.value);
 }
 
 document.getElementById('deleteWordButton').addEventListener('click', deleteWord);
+
+var recognizing = false;
+var recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+recognition.continuous = true;
+recognition.lang = 'ru-RU'; // Установка языка распознавания на русский
+recognition.interimResults = true; // Показ промежуточных результатов
+
+// Функция, вызываемая при начале распознавания голоса
+recognition.onstart = function() {
+    recognizing = true;
+    console.log("Начало распознавания...");
+};
+
+// Функция для обработки результатов распознавания
+recognition.onresult = function(event) {
+    var interim_transcript = '';
+    var final_transcript = '';
+
+    // Собираем результаты распознавания
+    for (var i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+            final_transcript += event.results[i][0].transcript;
+        } else {
+            interim_transcript += event.results[i][0].transcript;
+        }
+    }
+
+    // Обновляем значение текстового поля формы
+    document.getElementById('ideaDescription').value = final_transcript + interim_transcript;
+};
+
+// Функция, вызываемая при остановке распознавания голоса
+recognition.onend = function() {
+    recognizing = false;
+    console.log("Распознавание завершено.");
+};
+
+// Функция обработки ошибок
+recognition.onerror = function(event) {
+    console.log("Ошибка распознавания: " + event.error);
+};
+
+// Добавляем обработчик события на кнопку "Голос в текст"
+document.getElementById('voiceToTextButton').addEventListener('click', function() {
+    if (recognizing) {
+        recognition.stop();
+        return;
+    }
+    recognition.start();
+});
+
 </script>
 </body>
 </html>
