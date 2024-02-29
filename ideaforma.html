@@ -1,239 +1,208 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Сбор Идей</title>
-<style>
-body {
-font-family: 'Arial', sans-serif;
-margin: 0;
-padding: 0;
-background-image: url('URL-до-вашего-фона');
-background-size: cover;
-background-repeat: no-repeat;
-display: flex;
-justify-content: center;
-align-items: flex-start;
-padding-top: 20px;
-}
-.form-container {
-background-color: rgba(255, 255, 255, 0.8);
-padding: 20px;
-border-radius: 8px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-max-width: 800px;
-width: 100%;
-}
-.form-container form {
-display: flex;
-flex-direction: column;
-}
-.form-container textarea {
-margin-top: 10px;
-padding: 10px;
-border: 1px solid #ccc;
-border-radius: 4px;
-font-size: 14px;
-overflow: hidden; /* Скрываем полосу прокрутки */
-resize: vertical; /* Возвращаем возможность ручного изменения размера */
-}
-.button-row {
-display: flex;
-flex-wrap: wrap;
-gap: 10px;
-justify-content: space-between;
-margin-top: 10px;
-}
-.form-container button {
-flex: 1 0 calc(50% - 10px);
-padding: 10px;
-background-color: #4CAF50;
-color: white;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-}
-.form-container button:hover {
-background-color: #45a049;
-}
-.form-title {
-margin-bottom: 10px;
-font-weight: bold;
-}
-.slider {
--webkit-appearance: none;
-width: 100%;
-height: 15px;
-border-radius: 5px;
-background: #d3d3d3;
-outline: none;
-opacity: 0.7;
--webkit-transition: .2s;
-transition: opacity .2s;
-margin: 20px 0;
-}
-.slider::-webkit-slider-thumb {
--webkit-appearance: none;
-appearance: none;
-width: 25px;
-height: 25px;
-border-radius: 50%;
-background: #4CAF50;
-cursor: pointer;
-}
-.slider::-moz-range-thumb {
-width: 25px;
-height: 25px;
-border-radius: 50%;
-background: #4CAF50;
-cursor: pointer;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сбор Идей</title>
+    <style>
+        /* Основные стили для страницы и формы */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('URL-до-вашего-фона');
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 20px;
+        }
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-container textarea {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            overflow: hidden; /* Скрытие полосы прокрутки */
+            resize: vertical; /* Позволяет изменять размер вертикально */
+        }
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .form-container button {
+            flex: 1 0 calc(50% - 10px);
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+        .form-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 15px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            margin: 20px 0;
+        }
+        .slider::-webkit-slider-thumb, .slider::-moz-range-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 <div class="form-container">
-<form id="ideaForm">
-<div class="form-title">+ Добавить идею</div>
-<textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
-<input type="range" min="14" max="30" value="14" class="slider" id="fontSizeSlider">
-<div class="button-row">
-<button type="button" id="voiceToTextButton">Голос в текст</button>
-<button type="button" id="copyAllButton">Скопировать всё</button>
-<button type="button" id="clearButton">Очистить</button>
-<button type="button" id="deleteBlockButton">Удалить блок</button>
-<button type="button" id="deleteWordButton">Удалить слово</button>
-<button type="submit" id="submitButton">Отправить</button>
+    <form id="ideaForm">
+        <div class="form-title">+ Добавить идею</div>
+        <textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
+        <input type="range" min="14" max="30" value="14" class="slider" id="fontSizeSlider">
+        <div class="button-row">
+            <button type="button" id="voiceToTextButton">Голос в текст</button>
+            <button type="button" id="copyAllButton">Скопировать всё</button>
+            <button type="button" id="clearButton">Очистить</button>
+            <button type="button" id="deleteBlockButton">Удалить блок</button>
+            <button type="button" id="deleteWordButton">Удалить слово</button>
+            <button type="submit" id="submitButton">Отправить</button>
+        </div>
+    </form>
 </div>
-</form>
-</div>
+
 <script>
-const textarea = document.getElementById('ideaDescription');
-const fontSizeSlider = document.getElementById('fontSizeSlider');
-const form = document.getElementById('ideaForm');
+    // Получение элементов формы
+    const textarea = document.getElementById('ideaDescription');
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
 
-fontSizeSlider.addEventListener('input', function() {
-textarea.style.fontSize = this.value + 'px';
-autoResize();
-});
+    // Функция для автоматического изменения размера текстового поля
+    function autoResize() {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
 
-textarea.addEventListener('input', function() {
-formatText(); // Автоматическое форматирование текста
-});
+    // Функция для форматирования текста: оставляет одну пустую строку между блоками текста
+    function formatText() {
+        var formattedText = textarea.value.replace(/\n{3,}/g, '\n\n');
+        textarea.value = formattedText;
+        localStorage.setItem('savedText', formattedText); // Сохранение текста
+        autoResize(); // Вызов функции изменения размера после форматирования
+    }
 
-form.addEventListener('submit', function(event) {
-event.preventDefault(); // Предотвращаем отправку формы для демонстрации
-localStorage.removeItem('savedText');
-textarea.value = '';
-autoResize();
-});
+    // Обработчик изменения размера шрифта
+    fontSizeSlider.addEventListener('input', function() {
+        textarea.style.fontSize = this.value + 'px';
+        autoResize();
+    });
 
-document.getElementById('clearButton').addEventListener('click', function() {
-textarea.value = '';
-localStorage.removeItem('savedText');
-autoResize();
-});
+    // Обработчик ввода текста для автоматического форматирования
+    textarea.addEventListener('input', formatText);
 
-function autoResize() {
-textarea.style.height = 'auto';
-textarea.style.height = textarea.scrollHeight + 'px';
-}
+    // Обработчик отправки формы
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Предотвращение стандартной отправки формы
+        localStorage.removeItem('savedText'); // Очистка сохраненного текста
+        textarea.value = ''; // Очистка текстового поля
+        autoResize();
+    });
 
-function formatText() {
-var text = textarea.value;
-// Оставляем только одну пустую строку между блоками текста
-var formattedText = text.replace(/\n{3,}/g, '\n\n');
-textarea.value = formattedText;
-localStorage.setItem('savedText', formattedText); // Сохраняем отформатированный текст
-}
+    // Обработчик для кнопки "Очистить"
+    document.getElementById('clearButton').addEventListener('click', function() {
+        textarea.value = '';
+        localStorage.removeItem('savedText');
+        autoResize();
+    });
 
-// Загрузка сохраненного текста при инициализации
-document.addEventListener('DOMContentLoaded', function() {
-const savedText = localStorage.getItem('savedText');
-if (savedText) {
-textarea.value = savedText;
-autoResize();
-}
-});
+    // Инициализация распознавания речи
+    var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.continuous = true; // Непрерывное распознавание
+    recognition.lang = 'ru-RU'; // Язык распознавания
+    recognition.interimResults = true; // Вывод промежуточных результатов
 
-function deleteWord() {
-var textarea = document.getElementById('ideaDescription');
-var text = textarea.value;
-var cursorPos = textarea.selectionStart;
-var beforeCursor = text.substring(0, cursorPos).trimEnd();
-var afterCursor = text.substring(cursorPos).trimStart();
+    var recognizing = false; // Состояние распознавания
 
-// Находим последний пробел перед курсором или начало строки
-var start = beforeCursor.lastIndexOf(" ");
-start = start === -1 ? 0 : start;
+    // Начало распознавания
+    recognition.onstart = function() {
+        recognizing = true;
+    };
 
-// Находим первый пробел после курсора или конец строки
-var end = afterCursor.indexOf(" ");
-end = end === -1 ? afterCursor.length : end + cursorPos;
+    // Обработка результатов распознавания
+    recognition.onresult = function(event) {
+        let interim_transcript = '';
+        let final_transcript = '';
 
-// Удаляем слово и лишние пробелы, оставляя только один между словами
-var space = start > 0 && end < text.length ? " " : "";
-textarea.value = text.substring(0, start) + space + text.substring(end);
-
-// Обновляем позицию курсора
-textarea.selectionStart = textarea.selectionEnd = start + space.length;
-
-// Сохраняем изменения
-localStorage.setItem('savedText', textarea.value);
-}
-
-document.getElementById('deleteWordButton').addEventListener('click', deleteWord);
-
-var recognizing = false;
-var recognition = new webkitSpeechRecognition() || new SpeechRecognition();
-recognition.continuous = true;
-recognition.lang = 'ru-RU'; // Установка языка распознавания на русский
-recognition.interimResults = true; // Показ промежуточных результатов
-
-// Функция, вызываемая при начале распознавания голоса
-recognition.onstart = function() {
-    recognizing = true;
-    console.log("Начало распознавания...");
-};
-
-// Функция для обработки результатов распознавания
-recognition.onresult = function(event) {
-    var interim_transcript = '';
-    var final_transcript = '';
-
-    // Собираем результаты распознавания
-    for (var i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-            final_transcript += event.results[i][0].transcript;
-        } else {
-            interim_transcript += event.results[i][0].transcript;
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+                final_transcript += event.results[i][0].transcript;
+            } else {
+                interim_transcript += event.results[i][0].transcript;
+            }
         }
-    }
 
-    // Обновляем значение текстового поля формы
-    document.getElementById('ideaDescription').value = final_transcript + interim_transcript;
-};
+        // Обновление текста в поле ввода
+        textarea.value += final_transcript + interim_transcript;
+        autoResize(); // Адаптация размера текстового поля
+    };
 
-// Функция, вызываемая при остановке распознавания голоса
-recognition.onend = function() {
-    recognizing = false;
-    console.log("Распознавание завершено.");
-};
+    // Завершение распознавания
+    recognition.onend = function() {
+        recognizing = false;
+    };
 
-// Функция обработки ошибок
-recognition.onerror = function(event) {
-    console.log("Ошибка распознавания: " + event.error);
-};
+    // Обработка ошибок распознавания
+    recognition.onerror = function(event) {
+        console.error("Ошибка распознавания: " + event.error);
+    };
 
-// Добавляем обработчик события на кнопку "Голос в текст"
-document.getElementById('voiceToTextButton').addEventListener('click', function() {
-    if (recognizing) {
-        recognition.stop();
-        return;
-    }
-    recognition.start();
-});
+    // Переключение состояния распознавания голоса
+    document.getElementById('voiceToTextButton').addEventListener('click', function() {
+        if (recognizing) {
+            recognition.stop();
+        } else {
+            recognition.start();
+        }
+    });
 
+    // Загрузка сохраненного текста при инициализации страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedText = localStorage.getItem('savedText');
+        if (savedText) {
+            textarea.value = savedText;
+            autoResize();
+        }
+    });
 </script>
 </body>
 </html>
