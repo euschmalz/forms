@@ -5,90 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Сбор Идей</title>
     <style>
+        /* Стили для формы и её элементов */
         body {
-font-family: 'Arial', sans-serif;
-margin: 0;
-padding: 0;
-background-image: url('URL-до-вашего-фона');
-background-size: cover;
-background-repeat: no-repeat;
-display: flex;
-justify-content: center;
-align-items: flex-start;
-padding-top: 20px;
-}
-.form-container {
-background-color: rgba(255, 255, 255, 0.8);
-padding: 20px;
-border-radius: 8px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-max-width: 800px;
-width: 100%;
-}
-.form-container form {
-display: flex;
-flex-direction: column;
-}
-.form-container textarea {
-margin-top: 10px;
-padding: 10px;
-border: 1px solid #ccc;
-border-radius: 4px;
-font-size: 14px;
-overflow: hidden; /* Скрываем полосу прокрутки */
-resize: vertical; /* Возвращаем возможность ручного изменения размера */
-}
-.button-row {
-display: flex;
-flex-wrap: wrap;
-gap: 10px;
-justify-content: space-between;
-margin-top: 10px;
-}
-.form-container button {
-flex: 1 0 calc(50% - 10px);
-padding: 10px;
-background-color: #4CAF50;
-color: white;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-}
-.form-container button:hover {
-background-color: #45a049;
-}
-.form-title {
-margin-bottom: 10px;
-font-weight: bold;
-}
-.slider {
--webkit-appearance: none;
-width: 100%;
-height: 15px;
-border-radius: 5px;
-background: #d3d3d3;
-outline: none;
-opacity: 0.7;
--webkit-transition: .2s;
-transition: opacity .2s;
-margin: 20px 0;
-}
-.slider::-webkit-slider-thumb {
--webkit-appearance: none;
-appearance: none;
-width: 25px;
-height: 25px;
-border-radius: 50%;
-background: #4CAF50;
-cursor: pointer;
-}
-.slider::-moz-range-thumb {
-width: 25px;
-height: 25px;
-border-radius: 50%;
-background: #4CAF50;
-cursor: pointer;
-}
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('URL-до-вашего-фона');
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 20px;
+        }
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-container textarea {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            overflow: hidden; /* Скрытие полосы прокрутки */
+            resize: vertical; /* Возможность изменять размер вертикально */
+        }
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .form-container button {
+            flex: 1 0 calc(50% - 10px);
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+        .form-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 15px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            margin: 20px 0;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -101,53 +102,101 @@ cursor: pointer;
             <button type="button">Голос в текст</button>         
             <button type="button">Скопировать всё</button>
             <button type="button" id="clearButton">Очистить</button>
-            <button type="button">Удалить блок</button>
+            <button type="button" id="deleteBlockButton">Удалить блок</button>
             <button type="button" id="deleteWordButton">Удалить слово</button>
             <button type="submit">Отправить</button>
         </div>
     </form>
 </div>
 <script>
+    // Определение элементов и добавление слушателей событий
     const textarea = document.getElementById('ideaDescription');
     const fontSizeSlider = document.getElementById('fontSizeSlider');
     const form = document.getElementById('ideaForm');
 
+    // Изменение размера шрифта в текстовом поле
     fontSizeSlider.addEventListener('input', function() {
         textarea.style.fontSize = this.value + 'px';
         autoResize();
     });
 
-    textarea.addEventListener('input', function() {
-        formatText(); // Автоматическое форматирование текста
-    });
+    // Автоматическое форматирование текста при вводе
+    textarea.addEventListener('input', formatText);
 
+    // Обработка отправки формы
     form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Предотвращаем отправку формы для демонстрации
-        localStorage.removeItem('savedText');
-        textarea.value = '';
+        event.preventDefault(); // Предотвращение стандартной отправки формы
+        localStorage.removeItem('savedText'); // Очистка сохраненного текста
+        textarea.value = ''; // Очистка текстового поля
         autoResize();
     });
 
+    // Очистка текстового поля
     document.getElementById('clearButton').addEventListener('click', function() {
         textarea.value = '';
         localStorage.removeItem('savedText');
         autoResize();
     });
 
+    // Автоматическое изменение размера текстового поля
     function autoResize() {
         textarea.style.height = 'auto';
         textarea.style.height = textarea.scrollHeight + 'px';
     }
 
+    // Форматирование текста для сохранения только одной пустой строки между абзацами
     function formatText() {
         var text = textarea.value;
-        // Оставляем только одну пустую строку между блоками текста
-        var formattedText = text.replace(/\n{3,}/g, '\n\n');
+        var formattedText = text.replace(/\n{3,}/g, '\n\n'); // Замена трех и более переносов строки на два
         textarea.value = formattedText;
-        localStorage.setItem('savedText', formattedText); // Сохраняем отформатированный текст
+        localStorage.setItem('savedText', formattedText); // Сохранение отформатированного текста
     }
 
-    // Загрузка сохраненного текста при инициализации
+    // Удаление слова вокруг позиции курсора
+    document.getElementById('deleteWordButton').addEventListener('click', deleteWord);
+
+    function deleteWord() {
+        // Текущий текст и позиция курсора
+        var text = textarea.value;
+        var cursorPos = textarea.selectionStart;
+        
+        // Определение границ для удаления слова и обновление текста
+        var beforeCursor = text.substring(0, cursorPos).trimEnd();
+        var afterCursor = text.substring(cursorPos).trimStart();
+        var start = beforeCursor.lastIndexOf(" ");
+        start = start === -1 ? 0 : start;
+        var end = afterCursor.indexOf(" ");
+        end = end === -1 ? afterCursor.length : end + cursorPos;
+        var space = start > 0 && end < text.length ? " " : "";
+        textarea.value = text.substring(0, start) + space + text.substring(end);
+        
+        // Обновление позиции курсора и сохранение изменений
+        textarea.selectionStart = textarea.selectionEnd = start + space.length;
+        localStorage.setItem('savedText', textarea.value);
+    }
+
+    // Удаление блока текста вокруг позиции курсора
+    document.getElementById('deleteBlockButton').addEventListener('click', deleteBlock);
+
+    function deleteBlock() {
+        // Текущий текст и позиция курсора
+        var text = textarea.value;
+        var cursorPos = textarea.selectionStart;
+        
+        // Определение границ блока для удаления
+        var start = text.lastIndexOf('\n\n', cursorPos) + 2;
+        var end = text.indexOf('\n\n', cursorPos);
+        if (end === -1) end = text.length;
+        
+        // Обновление текста, удаление блока
+        textarea.value = text.substring(0, start) + text.substring(end);
+        
+        // Обновление позиции курсора и сохранение изменений
+        textarea.selectionStart = textarea.selectionEnd = start;
+        localStorage.setItem('savedText', textarea.value);
+    }
+
+    // Загрузка сохраненного текста при инициализации страницы
     document.addEventListener('DOMContentLoaded', function() {
         const savedText = localStorage.getItem('savedText');
         if (savedText) {
@@ -155,38 +204,6 @@ cursor: pointer;
             autoResize();
         }
     });
-
-
-function deleteWord() {
-    var textarea = document.getElementById('ideaDescription');
-    var text = textarea.value;
-    var cursorPos = textarea.selectionStart;
-    var beforeCursor = text.substring(0, cursorPos).trimEnd();
-    var afterCursor = text.substring(cursorPos).trimStart();
-
-    // Находим последний пробел перед курсором или начало строки
-    var start = beforeCursor.lastIndexOf(" ");
-    start = start === -1 ? 0 : start;
-
-    // Находим первый пробел после курсора или конец строки
-    var end = afterCursor.indexOf(" ");
-    end = end === -1 ? afterCursor.length : end + cursorPos;
-
-    // Удаляем слово и лишние пробелы, оставляя только один между словами
-    var space = start > 0 && end < text.length ? " " : "";
-    textarea.value = text.substring(0, start) + space + text.substring(end);
-
-    // Обновляем позицию курсора
-    textarea.selectionStart = textarea.selectionEnd = start + space.length;
-
-    // Сохраняем изменения
-    localStorage.setItem('savedText', textarea.value);
-}
-
-document.getElementById('deleteWordButton').addEventListener('click', deleteWord);
-
-
-
 </script>
 </body>
 </html>
