@@ -7,234 +7,233 @@
 <style>
 
 .button, .slider::-webkit-slider-thumb, .slider::-moz-range-thumb {
-border-radius: 4px;
-cursor: pointer;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .form-container button, .slider::-webkit-slider-thumb, .slider::-moz-range-thumb {
-background-color: #4CAF50;
+    background-color: #4CAF50;
 }
 
 .form-container button:hover {
-background-color: #45a049;
+    background-color: #45a049;
 }
 
 
-
+    
 body {
-font-family: 'Arial', sans-serif;
-margin: 0;
-padding: 0;
-/* Удалены строки, связанные с фоновым изображением */
-display: flex;
-justify-content: center;
-align-items: flex-start;
-padding-top: 20px;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    /* Удалены строки, связанные с фоновым изображением */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 20px;
 }
-
-.form-container {
-background-color: rgba(255, 255, 255, 0.8);
-padding: 20px;
-border-radius: 8px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-max-width: 800px;
-width: 100%;
-}
-.form-container form {
-display: flex;
-flex-direction: column;
-}
-.form-container textarea {
-margin-top: 10px;
-padding: 10px;
-border: 1px solid #ccc;
-border-radius: 4px;
-font-size: 14px;
-overflow: hidden; /* Скрываем полосу прокрутки */
-resize: vertical; /* Возвращаем возможность ручного изменения размера */
-}
-.button-row {
-display: flex;
-flex-wrap: wrap;
-gap: 10px;
-justify-content: space-between;
-margin-top: 10px;
-}
-.form-container button {
-flex: 1 0 calc(50% - 10px);
-padding: 10px;
-background-color: #4CAF50;
-color: white;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-}
-.form-container button:hover {
-background-color: #45a049;
-}
-.form-title {
-margin-bottom: 10px;
-font-weight: bold;
-}
-.slider {
--webkit-appearance: none;
-width: 100%;
-height: 15px;
-border-radius: 5px;
-background: #d3d3d3;
-outline: none;
-opacity: 0.7;
--webkit-transition: .2s;
-transition: opacity .2s;
-margin: 20px 0;
-}
-.slider::-webkit-slider-thumb {
--webkit-appearance: none;
-appearance: none;
-width: 25px;
-height: 25px;
-border-radius: 50%;
-background: #4CAF50;
-cursor: pointer;
-}
-.slider::-moz-range-thumb {
-width: 25px;
-height: 25px;
-border-radius: 50%;
-background: #4CAF50;
-cursor: pointer;
-}
+    
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        width: 100%;
+    }
+    .form-container form {
+        display: flex;
+        flex-direction: column;
+    }
+    .form-container textarea {
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        overflow: hidden; /* Скрываем полосу прокрутки */
+        resize: vertical; /* Возвращаем возможность ручного изменения размера */
+    }
+    .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    .form-container button {
+        flex: 1 0 calc(50% - 10px);
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .form-container button:hover {
+        background-color: #45a049;
+    }
+    .form-title {
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 15px;
+        border-radius: 5px;   
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+        margin: 20px 0;
+    }
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%; 
+        background: #4CAF50;
+        cursor: pointer;
+    }
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #4CAF50;
+        cursor: pointer;
+    }
 </style>
 </head>
 <body>
-
+    
 <div class="form-container">
-<form id="ideaForm">
-<div class="form-title">+ Добавить идею</div>
-<textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
-<input type="range" min="14" max="30" value="14" class="slider" id="fontSizeSlider">
-<div class="button-row">
-<button type="button" id="voiceToTextButton">Голос в текст</button>
-<button type="button" id="copyAllButton">Скопировать всё</button>
-<button type="button" id="clearButton">Очистить</button>
-<button type="button" id="deleteBlockButton">Удалить блок</button>
-<button type="button" id="deleteWordButton">Удалить слово</button>
-<button type="submit" id="submitButton">Отправить</button>
-<input type="range" min="14" max="30" value="14" class="slider" id="buttonFontSizeSlider">
-</div>
-</form>
+    <form id="ideaForm">
+        <div class="form-title">+ Добавить идею</div>
+        <textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
+        <input type="range" min="14" max="30" value="14" class="slider" id="fontSizeSlider">
+        <div class="button-row">
+            <button type="button" id="voiceToTextButton">Голос в текст</button>
+            <button type="button" id="copyAllButton">Скопировать всё</button>
+            <button type="button" id="clearButton">Очистить</button>
+            <button type="button" id="deleteBlockButton">Удалить блок</button>
+            <button type="button" id="deleteWordButton">Удалить слово</button>
+            <button type="submit" id="submitButton">Отправить</button>
+            <input type="range" min="14" max="30" value="14" class="slider" id="buttonFontSizeSlider">
+        </div>
+    </form>
 </div>
 
 <script>
-const textarea = document.getElementById('ideaDescription');
-const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const textarea = document.getElementById('ideaDescription');
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
 
-fontSizeSlider.addEventListener('input', function() {
-textarea.style.fontSize = this.value + 'px';
-autoResize();
-});
+    fontSizeSlider.addEventListener('input', function() {
+        textarea.style.fontSize = this.value + 'px';
+        autoResize();
+    });
 
-textarea.addEventListener('input', autoResize);
+    textarea.addEventListener('input', autoResize);
 
-function autoResize() {
-textarea.style.height = 'auto';
-textarea.style.height = textarea.scrollHeight + 'px';
-}
+    function autoResize() {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
 
-// Первоначальное автовыравнивание размера текстового поля
-window.onload = autoResize;
+    // Первоначальное автовыравнивание размера текстового поля
+    window.onload = autoResize;
 
+    
 
+    document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.getElementById('ideaDescription');
+    const clearButton = document.getElementById('clearButton');
+    const submitButton = document.getElementById('submitButton');
 
-document.addEventListener('DOMContentLoaded', function() {
-const textarea = document.getElementById('ideaDescription');
-const clearButton = document.getElementById('clearButton');
-const submitButton = document.getElementById('submitButton');
+    // Восстановление текста при загрузке страницы
+    textarea.value = localStorage.getItem('text') || '';
+    autoResize();
 
-// Восстановление текста при загрузке страницы
-textarea.value = localStorage.getItem('text') || '';
-autoResize();
+    // Сохранение текста при изменении
+    textarea.addEventListener('input', function() {
+        localStorage.setItem('text', this.value);
+        autoResize();
+    });
 
-// Сохранение текста при изменении
-textarea.addEventListener('input', function() {
-localStorage.setItem('text', this.value);
-autoResize();
-});
+    // Очистка localStorage и textarea при очистке формы
+    clearButton.addEventListener('click', function() {
+        textarea.value = '';
+        localStorage.removeItem('text');
+        autoResize();
+    });
 
-// Очистка localStorage и textarea при очистке формы
-clearButton.addEventListener('click', function() {
-textarea.value = '';
-localStorage.removeItem('text');
-autoResize();
-});
+    // Функция для автовыравнивания размера текстового поля
+    function autoResize() {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
 
-// Функция для автовыравнивания размера текстового поля
-function autoResize() {
-textarea.style.height = 'auto';
-textarea.style.height = textarea.scrollHeight + 'px';
-}
-
-// Очистка localStorage при отправке формы
-submitButton.addEventListener('click', function(e) {
-e.preventDefault(); // Для демонстрации предотвращаем реальную отправку формы
-localStorage.removeItem('text');
-textarea.value = ''; // Очищаем textarea
-autoResize();
-});
-});
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-const copyAllButton = document.getElementById('copyAllButton');
-
-copyAllButton.addEventListener('click', function() {
-const textarea = document.getElementById('ideaDescription');
-textarea.select(); // Выделяем текст в textarea
-document.execCommand('copy'); // Копируем текст в буфер обмена
-
-// Опционально: показываем уведомление о копировании
-alert('Текст скопирован в буфер обмена');
-});
+    // Очистка localStorage при отправке формы
+    submitButton.addEventListener('click', function(e) {
+        e.preventDefault(); // Для демонстрации предотвращаем реальную отправку формы
+        localStorage.removeItem('text');
+        textarea.value = ''; // Очищаем textarea
+        autoResize();
+    });
 });
 
 
-document.addEventListener('DOMContentLoaded', function() {
-const buttonFontSizeSlider = document.getElementById('buttonFontSizeSlider');
-const buttons = document.querySelectorAll('.form-container button');
 
-buttonFontSizeSlider.addEventListener('input', function() {
-buttons.forEach(button => {
-button.style.fontSize = this.value + 'px';
+    document.addEventListener('DOMContentLoaded', function() {
+    const copyAllButton = document.getElementById('copyAllButton');
+
+    copyAllButton.addEventListener('click', function() {
+        const textarea = document.getElementById('ideaDescription');
+        textarea.select(); // Выделяем текст в textarea
+        document.execCommand('copy'); // Копируем текст в буфер обмена
+
+        // Опционально: показываем уведомление о копировании
+        alert('Текст скопирован в буфер обмена');
+    });
 });
-});
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const buttonFontSizeSlider = document.getElementById('buttonFontSizeSlider');
+    const buttons = document.querySelectorAll('.form-container button');
+
+    buttonFontSizeSlider.addEventListener('input', function() {
+        buttons.forEach(button => {
+            button.style.fontSize = this.value + 'px';
+        });
+    });
 });
 
 
 
 document.getElementById('submitButton').addEventListener('click', function(e) {
-e.preventDefault(); // Предотвращает стандартную отправку формы
-var ideaDescription = document.getElementById('ideaDescription').value;
+  e.preventDefault(); // Предотвращает стандартную отправку формы
+  var ideaDescription = document.getElementById('ideaDescription').value;
 
-fetch('https://script.google.com/macros/s/AKfycbwNsL4wlSbVsTrTeUETxifiwnYLBhsLrSRLdoVHBn64aCFYhvSJ-V3n_LxiRl_HE8vmow/exec', {
-method: 'POST',
-headers: {
-Content-Type': 'application/x-www-form-urlencoded',
-},
-body: 'text=' + encodeURIComponent(ideaDescription),
-})
-.then(response => {
-if (!response.ok) {
-throw new Error('Network response was not ok');
-}
-return response.json();
-})
-.then(data => console.log(data))
-.catch(error => console.error('Ошибка:', error));
+  fetch('https://script.google.com/macros/s/AKfycbwNsL4wlSbVsTrTeUETxifiwnYLBhsLrSRLdoVHBn64aCFYhvSJ-V3n_LxiRl_HE8vmow/exec', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'text=' + encodeURIComponent(ideaDescription),
+  })
+  .then(response => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => console.log(data))
+  .catch(error => console.error('Ошибка:', error));
 });
 
-
-
+    
 </script>
 </body>
 </html>
