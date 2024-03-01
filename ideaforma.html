@@ -218,15 +218,18 @@ document.getElementById('submitButton').addEventListener('click', function(e) {
 
   fetch('https://script.google.com/macros/s/AKfycbxQxE8hZOsu9FyV_1DjoxVxidJ9GUB6kL9TsfIvYLYMu392ilhMmkf-I4y9TNtcw7nCzA/exec', {
     method: 'POST',
+    mode: 'no-cors', // Добавлено для демонстрации, хотя это ограничит доступ к ответу
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: 'text=' + encodeURIComponent(ideaDescription),
   })
-  .then(response => response.json())
-  .then(data => console.log(data))
+  .then(response => {
+    console.log('Отправлено, но ответ не доступен из-за no-cors');
+  })
   .catch(error => console.error('Ошибка:', error));
 });
+
 
 
     
