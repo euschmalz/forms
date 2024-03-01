@@ -122,54 +122,65 @@ cursor: pointer;
         </form>
     </div>
 
-    <script>
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.getElementById('ideaDescription');
-    const clearButton = document.getElementById('clearButton');
-    const submitButton = document.getElementById('submitButton');
-    const copyAllButton = document.getElementById('copyAllButton');
+    const fontSizeSlider = document.getElementById('fontSizeSlider'); // Слайдер для изменения размера шрифта текста
+    const buttonFontSizeSlider = document.getElementById('buttonFontSizeSlider'); // Слайдер для изменения размера шрифта кнопок
+    const buttons = document.querySelectorAll('.button-row button'); // Кнопки для изменения размера шрифта
 
-    // Восстановление текста при загрузке страницы и настройка авто-ресайза
-    function initTextarea() {
-        textarea.value = localStorage.getItem('text') || '';
-        textarea.addEventListener('input', function() {
-            localStorage.setItem('text', this.value);
-            autoResize();
-        });
-        autoResize();
-    }
-
-    // Автоматическое изменение высоты текстового поля
+    // Функция для автоматического изменения высоты текстового поля
     function autoResize() {
         textarea.style.height = 'auto';
         textarea.style.height = textarea.scrollHeight + 'px';
     }
 
+    // Изменение размера шрифта в текстовом поле
+    fontSizeSlider.addEventListener('input', function() {
+        textarea.style.fontSize = this.value + 'px';
+        autoResize(); // Обновляем высоту текстового поля
+    });
+
+    // Изменение размера шрифта кнопок
+    buttonFontSizeSlider.addEventListener('input', function() {
+        buttons.forEach(button => {
+            button.style.fontSize = this.value + 'px';
+        });
+    });
+
+    // Восстановление текста при загрузке страницы
+    textarea.value = localStorage.getItem('text') || '';
+    textarea.addEventListener('input', function() {
+        localStorage.setItem('text', this.value);
+        autoResize(); // Обновляем высоту текстового поля
+    });
+
     // Очистка текстового поля и localStorage
-    clearButton.addEventListener('click', function() {
+    document.getElementById('clearButton').addEventListener('click', function() {
         textarea.value = '';
         localStorage.removeItem('text');
-        autoResize();
+        autoResize(); // Обновляем высоту текстового поля
     });
 
     // Копирование текста в буфер обмена
-    copyAllButton.addEventListener('click', function() {
+    document.getElementById('copyAllButton').addEventListener('click', function() {
         textarea.select();
         document.execCommand('copy');
         alert('Текст скопирован в буфер обмена');
     });
 
     // Отправка данных на сервер и очистка после отправки
-    submitButton.addEventListener('click', function(e) {
+    document.getElementById('submitButton').addEventListener('click', function(e) {
         e.preventDefault();
         sendData(textarea.value);
     });
 
-    // Обработка отправки данных
     function sendData(data) {
         fetch('https://script.google.com/macros/s/AKfycbwNsL4wlSbVsTrTeUETxifiwnYLBhsLrSRLdoVHBn64aCFYhvSJ-V3n_LxiRl_HE8vmow/exec', {
             method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
             body: 'text=' + encodeURIComponent(data),
         })
         .then(response => response.ok ? response.json() : Promise.reject('Ошибка отправки: ' + response.statusText))
@@ -178,14 +189,13 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Идея успешно отправлена!');
             textarea.value = ''; // Очищаем поле после отправки
             localStorage.removeItem('text'); // Удаляем сохранённый текст
-            autoResize();
+            autoResize(); // Обновляем высоту текстового поля
         })
         .catch(error => console.error('Ошибка:', error));
     }
-
-    initTextarea(); // Инициализируем работу с текстовым полем
 });
 </script>
+
 
 </body>
 </html>
