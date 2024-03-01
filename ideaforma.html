@@ -217,7 +217,7 @@ document.getElementById('submitButton').addEventListener('click', function(e) {
   e.preventDefault(); // Предотвращает стандартную отправку формы
   var ideaDescription = document.getElementById('ideaDescription').value;
 
-  fetch('<https://script.google.com/macros/s/AKfycbw1NNj_1_bYEwhA4-4K1yx2S_JOZT4VucrmNkjgyhjJFYNNiIUcsSIWO1KkZFmcDNz1-A/exec'>, {
+  fetch('https://script.google.com/macros/s/AKfycbw1NNj_1_bYEwhA4-4K1yx2S_JOZT4VucrmNkjgyhjJFYNNiIUcsSIWO1KkZFmcDNz1-A/exec', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
