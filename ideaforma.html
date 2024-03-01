@@ -45,7 +45,23 @@
         .form-title {
             font-weight: bold;
         }
-   <script>
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <form id="ideaForm">
+            <div class="form-title">+ Добавить идею</div>
+            <textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
+            <div class="button-row">
+                <button type="button" id="voiceToTextButton">Голос в текст</button>
+                <button type="button" id="copyAllButton">Скопировать всё</button>
+                <button type="button" id="clearButton">Очистить</button>
+                <button type="submit" id="submitButton">Отправить</button>
+            </div>
+        </form>
+    </div>
+
+ <script>
 document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.getElementById('ideaDescription');
     const clearButton = document.getElementById('clearButton');
@@ -90,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Обработка отправки данных
     function sendData(data) {
-        fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbwNsL4wlSbVsTrTeUETxifiwnYLBhsLrSRLdoVHBn64aCFYhvSJ-V3n_LxiRl_HE8vmow/exec', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: 'text=' + encodeURIComponent(data),
@@ -109,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initTextarea(); // Инициализируем работу с текстовым полем
 });
 </script>
+   
 
 </body>
 </html>
