@@ -211,6 +211,17 @@
     });
 });
 
+
+    var SPREADSHEET_ID = '1LCqqj1KUR1unufoKlDpDe12Espoz5mwXhVNuII35Eq8';
+var sheetName = 'Ideas';
+
+function doPost(e) {
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(sheetName);
+  sheet.appendRow([new Date(), e.parameter.text]); // Добавляем дату и текст
+  return ContentService.createTextOutput(JSON.stringify({result: 'success', data: e.parameter.text}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
     
 </script>
 </body>
