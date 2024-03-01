@@ -190,12 +190,14 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: 'text=' + encodeURIComponent(textarea.value),
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
+
+
+    .then(response => {
+    console.log(response); // Добавьте для отладки
+    return response.json(); // Попробуйте просто вернуть response.json() без проверки
+})
+
+            
         .then(data => console.log(data))
         .catch(error => console.error('Ошибка:', error));
     }
