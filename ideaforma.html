@@ -118,14 +118,35 @@ cursor: pointer;
         </form>
     </div>
 
- <script>
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.getElementById('ideaDescription');
+    const fontSizeSlider = document.getElementById('fontSizeSlider'); // Слайдер для изменения размера шрифта текста
+    const buttonFontSizeSlider = document.getElementById('buttonFontSizeSlider'); // Слайдер для изменения размера шрифта кнопок
     const clearButton = document.getElementById('clearButton');
     const submitButton = document.getElementById('submitButton');
     const copyAllButton = document.getElementById('copyAllButton');
+    const buttons = document.querySelectorAll('.form-container button');
 
-    // Восстановление текста при загрузке страницы и настройка авто-ресайза
+    // Автоматическое изменение высоты текстового поля
+    function autoResize() {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // Инициализация слайдера для изменения размера шрифта текста
+    fontSizeSlider.addEventListener('input', function() {
+        textarea.style.fontSize = this.value + 'px';
+        autoResize();
+    });
+
+    // Инициализация слайдера для изменения размера шрифта кнопок
+    buttonFontSizeSlider.addEventListener('input', function() {
+        buttons.forEach(button => {
+            button.style.fontSize = this.value + 'px';
+        });
+    });
+
     function initTextarea() {
         textarea.value = localStorage.getItem('text') || '';
         textarea.addEventListener('input', function() {
@@ -135,35 +156,25 @@ document.addEventListener('DOMContentLoaded', function() {
         autoResize();
     }
 
-    // Автоматическое изменение высоты текстового поля
-    function autoResize() {
-        textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
-    }
-
-    // Очистка текстового поля и localStorage
     clearButton.addEventListener('click', function() {
         textarea.value = '';
         localStorage.removeItem('text');
         autoResize();
     });
 
-    // Копирование текста в буфер обмена
     copyAllButton.addEventListener('click', function() {
         textarea.select();
         document.execCommand('copy');
         alert('Текст скопирован в буфер обмена');
     });
 
-    // Отправка данных на сервер и очистка после отправки
     submitButton.addEventListener('click', function(e) {
         e.preventDefault();
         sendData(textarea.value);
     });
 
-    // Обработка отправки данных
     function sendData(data) {
-        fetch('https://script.google.com/macros/s/AKfycbwNsL4wlSbVsTrTeUETxifiwnYLBhsLrSRLdoVHBn64aCFYhvSJ-V3n_LxiRl_HE8vmow/exec', {
+        fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: 'text=' + encodeURIComponent(data),
@@ -172,16 +183,17 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             console.log(data);
             alert('Идея успешно отправлена!');
-            textarea.value = ''; // Очищаем поле после отправки
-            localStorage.removeItem('text'); // Удаляем сохранённый текст
+            textarea.value = ''; 
+            localStorage.removeItem('text');
             autoResize();
         })
         .catch(error => console.error('Ошибка:', error));
     }
 
-    initTextarea(); // Инициализируем работу с текстовым полем
+    initTextarea();
 });
 </script>
+
    
 
 </body>
