@@ -212,30 +212,23 @@
 });
 
 
-    var SPREADSHEET_ID = '1LCqqj1KUR1unufoKlDpDe12Espoz5mwXhVNuII35Eq8';
-var sheetName = 'Ideas';
 
-function doPost(e) {
-  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(sheetName);
-  sheet.appendRow([new Date(), e.parameter.text]); // Добавляем дату и текст
-  return ContentService.createTextOutput(JSON.stringify({result: 'success', data: e.parameter.text}))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-
-    document.getElementById('submitButton').addEventListener('click', function(e) {
+document.getElementById('submitButton').addEventListener('click', function(e) {
   e.preventDefault(); // Предотвращает стандартную отправку формы
   var ideaDescription = document.getElementById('ideaDescription').value;
 
   fetch('https://script.google.com/macros/s/AKfycbw1NNj_1_bYEwhA4-4K1yx2S_JOZT4VucrmNkjgyhjJFYNNiIUcsSIWO1KkZFmcDNz1-A/exec', {
     method: 'POST',
-    contentType: 'application/json',
-    body: JSON.stringify({text: ideaDescription}),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'text=' + encodeURIComponent(ideaDescription),
   })
   .then(response => response.json())
   .then(data => console.log(data))
   .catch(error => console.error('Ошибка:', error));
 });
+
 
     
     
