@@ -218,17 +218,21 @@ document.getElementById('submitButton').addEventListener('click', function(e) {
 
   fetch('https://script.google.com/macros/s/AKfycbwNsL4wlSbVsTrTeUETxifiwnYLBhsLrSRLdoVHBn64aCFYhvSJ-V3n_LxiRl_HE8vmow/exec', {
     method: 'POST',
-    mode: 'no-cors', // Добавлено для демонстрации, хотя это ограничит доступ к ответу
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: 'text=' + encodeURIComponent(ideaDescription),
   })
   .then(response => {
-    console.log('Отправлено, но ответ не доступен из-за no-cors');
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
   })
+  .then(data => console.log(data))
   .catch(error => console.error('Ошибка:', error));
 });
+
 
 
 
