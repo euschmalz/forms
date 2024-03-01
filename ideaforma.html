@@ -45,64 +45,70 @@
         .form-title {
             font-weight: bold;
         }
-    </style>
-</head>
-<body>
-    <div class="form-container">
-        <form id="ideaForm">
-            <div class="form-title">+ Добавить идею</div>
-            <textarea id="ideaDescription" name="ideaDescription" required placeholder="Опишите свою идею *"></textarea>
-            <div class="button-row">
-                <button type="button" id="voiceToTextButton">Голос в текст</button>
-                <button type="button" id="copyAllButton">Скопировать всё</button>
-                <button type="button" id="clearButton">Очистить</button>
-                <button type="submit" id="submitButton">Отправить</button>
-            </div>
-        </form>
-    </div>
+   <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.getElementById('ideaDescription');
+    const clearButton = document.getElementById('clearButton');
+    const submitButton = document.getElementById('submitButton');
+    const copyAllButton = document.getElementById('copyAllButton');
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const textarea = document.getElementById('ideaDescription');
-            const clearButton = document.getElementById('clearButton');
-            const submitButton = document.getElementById('submitButton');
-            const copyAllButton = document.getElementById('copyAllButton');
-
-            textarea.value = localStorage.getItem('text') || '';
-            textarea.addEventListener('input', function() {
-                localStorage.setItem('text', this.value);
-            });
-
-            clearButton.addEventListener('click', function() {
-                textarea.value = '';
-                localStorage.removeItem('text');
-            });
-
-            copyAllButton.addEventListener('click', function() {
-                textarea.select();
-                document.execCommand('copy');
-                alert('Текст скопирован в буфер обмена');
-            });
-
-            submitButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                var ideaDescription = textarea.value;
-
-                fetch('https://script.google.com/macros/s/AKfycbwNsL4wlSbVsTrTeUETxifiwnYLBhsLrSRLdoVHBn64aCFYhvSJ-V3n_LxiRl_HE8vmow/exec', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    body: 'text=' + encodeURIComponent(ideaDescription),
-                })
-                .then(response => response.ok ? response.json() : Promise.reject('Ошибка отправки: ' + response.statusText))
-                .then(data => {
-                    console.log(data);
-                    alert('Идея успешно отправлена!');
-                    textarea.value = ''; // Очищаем поле после отправки
-                    localStorage.removeItem('text'); // Удаляем сохранённый текст
-                })
-                .catch(error => console.error('Ошибка:', error));
-            });
+    // Восстановление текста при загрузке страницы и настройка авто-ресайза
+    function initTextarea() {
+        textarea.value = localStorage.getItem('text') || '';
+        textarea.addEventListener('input', function() {
+            localStorage.setItem('text', this.value);
+            autoResize();
         });
-    </script>
+        autoResize();
+    }
+
+    // Автоматическое изменение высоты текстового поля
+    function autoResize() {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // Очистка текстового поля и localStorage
+    clearButton.addEventListener('click', function() {
+        textarea.value = '';
+        localStorage.removeItem('text');
+        autoResize();
+    });
+
+    // Копирование текста в буфер обмена
+    copyAllButton.addEventListener('click', function() {
+        textarea.select();
+        document.execCommand('copy');
+        alert('Текст скопирован в буфер обмена');
+    });
+
+    // Отправка данных на сервер и очистка после отправки
+    submitButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        sendData(textarea.value);
+    });
+
+    // Обработка отправки данных
+    function sendData(data) {
+        fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'text=' + encodeURIComponent(data),
+        })
+        .then(response => response.ok ? response.json() : Promise.reject('Ошибка отправки: ' + response.statusText))
+        .then(data => {
+            console.log(data);
+            alert('Идея успешно отправлена!');
+            textarea.value = ''; // Очищаем поле после отправки
+            localStorage.removeItem('text'); // Удаляем сохранённый текст
+            autoResize();
+        })
+        .catch(error => console.error('Ошибка:', error));
+    }
+
+    initTextarea(); // Инициализируем работу с текстовым полем
+});
+</script>
+
 </body>
 </html>
