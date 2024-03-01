@@ -222,6 +222,22 @@ function doPost(e) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+
+    document.getElementById('submitButton').addEventListener('click', function(e) {
+  e.preventDefault(); // Предотвращает стандартную отправку формы
+  var ideaDescription = document.getElementById('ideaDescription').value;
+
+  fetch('https://script.google.com/macros/s/AKfycbw1NNj_1_bYEwhA4-4K1yx2S_JOZT4VucrmNkjgyhjJFYNNiIUcsSIWO1KkZFmcDNz1-A/exec', {
+    method: 'POST',
+    contentType: 'application/json',
+    body: JSON.stringify({text: ideaDescription}),
+  })
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Ошибка:', error));
+});
+
+    
     
 </script>
 </body>
