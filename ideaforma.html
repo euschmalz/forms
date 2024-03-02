@@ -128,6 +128,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const fontSizeSlider = document.getElementById('fontSizeSlider');
     const buttonFontSizeSlider = document.getElementById('buttonFontSizeSlider');
     const buttons = document.querySelectorAll('.button-row button');
+    const voiceToTextButton = document.getElementById('voiceToTextButton');
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+    recognition.onresult = function(event) {
+        textarea.value += event.results[0][0].transcript;
+    };
+
+    voiceToTextButton.addEventListener('click', function() {
+        if (!this.classList.contains('is-active')) {
+            recognition.start();
+            this.classList.add('is-active');
+            this.textContent = 'Остановить запись';
+        } else {
+            recognition.stop();
+            this.classList.remove('is-active');
+            this.textContent = 'Голос в текст';
+        }
+    });
 
 
     // Функция для автоматического изменения высоты текстового поля
@@ -195,20 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Ошибка:', error));
     }
-
-if (!this.classList.contains('is-active')) {
-    recognition.start();
-    recognition.onresult = function(event) {
-        document.getElementById('ideaDescription').value += event.results[0][0].transcript;
-    };
-    this.classList.add('is-active');
-    this.textContent = 'Остановить запись'; // Изменение текста кнопки на активный
-} else {
-    recognition.stop();
-    this.classList.remove('is-active');
-    this.textContent = 'Голос в текст'; // Возврат текста кнопки к исходному
-}
-
     
     autoResize(); // Первоначальное автовыравнивание размера текстового поля
 });
