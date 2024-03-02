@@ -129,6 +129,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const buttonFontSizeSlider = document.getElementById('buttonFontSizeSlider');
     const buttons = document.querySelectorAll('.button-row button');
 
+    if (!this.classList.contains('is-active')) {
+    recognition.start();
+    recognition.onresult = function(event) {
+        document.getElementById('ideaDescription').value += event.results[0][0].transcript;
+    };
+    this.classList.add('is-active');
+    this.textContent = 'Остановить запись'; // Изменение текста кнопки на активный
+} else {
+    recognition.stop();
+    this.classList.remove('is-active');
+    this.textContent = 'Голос в текст'; // Возврат текста кнопки к исходному
+}
+
+
     // Функция для автоматического изменения высоты текстового поля
     function autoResize() {
         textarea.style.height = 'auto';
