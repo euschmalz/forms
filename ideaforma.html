@@ -125,15 +125,22 @@ cursor: pointer;
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.getElementById('ideaDescription');
-    const fontSizeSlider = document.getElementById('fontSizeSlider'); // Слайдер для изменения размера шрифта текста
-    const buttonFontSizeSlider = document.getElementById('buttonFontSizeSlider'); // Слайдер для изменения размера шрифта кнопок
-    const buttons = document.querySelectorAll('.button-row button'); // Кнопки для изменения размера шрифта
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const buttonFontSizeSlider = document.getElementById('buttonFontSizeSlider');
+    const buttons = document.querySelectorAll('.button-row button');
 
     // Функция для автоматического изменения высоты текстового поля
     function autoResize() {
         textarea.style.height = 'auto';
         textarea.style.height = textarea.scrollHeight + 'px';
     }
+
+    // Восстановление текста при загрузке страницы
+    textarea.value = localStorage.getItem('text') || '';
+    textarea.addEventListener('input', function() {
+        localStorage.setItem('text', this.value);
+        autoResize(); // Обновляем высоту текстового поля
+    });
 
     // Изменение размера шрифта в текстовом поле
     fontSizeSlider.addEventListener('input', function() {
@@ -146,13 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
         buttons.forEach(button => {
             button.style.fontSize = this.value + 'px';
         });
-    });
-
-    // Восстановление текста при загрузке страницы
-    textarea.value = localStorage.getItem('text') || '';
-    textarea.addEventListener('input', function() {
-        localStorage.setItem('text', this.value);
-        autoResize(); // Обновляем высоту текстового поля
     });
 
     // Очистка текстового поля и localStorage
@@ -176,7 +176,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function sendData(data) {
-        fetch('https://script.google.com/macros/s/AKfycbwNsL4wlSbVsTrTeUETxifiwnYLBhsLrSRLdoVHBn64aCFYhvSJ-V3n_LxiRl_HE8vmow/exec', {
+        // URL для Google Apps Script должен быть заменён на ваш актуальный URL
+        fetch('https://script.google.com/macros/s/YOUR_GOOGLE_SCRIPT_ID_HERE/exec', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -193,7 +194,10 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Ошибка:', error));
     }
+
+    autoResize(); // Первоначальное автовыравнивание размера текстового поля
 });
+
 </script>
 
 
