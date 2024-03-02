@@ -198,6 +198,21 @@ document.addEventListener('DOMContentLoaded', function() {
     autoResize(); // Первоначальное автовыравнивание размера текстового поля
 });
 
+
+    document.getElementById('voiceToTextButton').addEventListener('click', function() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    if (!this.classList.contains('is-active')) {
+        recognition.start();
+        recognition.onresult = function(event) {
+            document.getElementById('ideaDescription').value += event.results[0][0].transcript;
+        };
+        this.classList.add('is-active');
+    } else {
+        recognition.stop();
+        this.classList.remove('is-active');
+    }
+});
+
 </script>
 
 
