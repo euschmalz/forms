@@ -128,6 +128,45 @@ document.addEventListener('DOMContentLoaded', function() {
     const fontSizeSlider = document.getElementById('fontSizeSlider');
     const buttonFontSizeSlider = document.getElementById('buttonFontSizeSlider');
     const buttons = document.querySelectorAll('.button-row button');
+    const formOpenTimestamp = new Date().toISOString(); // Дата и время открытия формы
+
+    // Остальной код остается без изменений до функции sendData
+
+    function sendData(data) {
+        const formData = {
+            formOpenTimestamp: formOpenTimestamp, // Добавляем дату и время открытия формы
+            submitTimestamp: new Date().toISOString(), // Дата и время отправки данных
+            ideaDescription: data // Текст из текстового поля
+        };
+
+        fetch('https://script.google.com/macros/s/ТВОЙ_СКРИПТ/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData) // Меняем на JSON строку
+        })
+        .then(response => response.ok ? response.json() : Promise.reject('Ошибка отправки: ' + response.statusText))
+        .then(data => {
+            console.log(data);
+            alert('Идея успешно отправлена!');
+            textarea.value = ''; // Очищаем поле после отправки
+            localStorage.removeItem('text'); // Удаляем сохранённый текст
+            autoResize(); // Обновляем высоту текстового поля
+        })
+        .catch(error => console.error('Ошибка:', error));
+    }
+
+    // Остальной код остается без изменений
+
+
+
+    
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.getElementById('ideaDescription');
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const buttonFontSizeSlider = document.getElementById('buttonFontSizeSlider');
+    const buttons = document.querySelectorAll('.button-row button');
 
     // Функция для автоматического изменения высоты текстового поля
     function autoResize() {
